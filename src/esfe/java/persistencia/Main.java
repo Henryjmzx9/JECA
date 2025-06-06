@@ -8,6 +8,7 @@ public class Main {
         // to see how IntelliJ IDEA suggests fixing it.
         System.out.println("Holaaaaaaaaa!");
         System.out.println("hola menoles!");
+        System.out.println("hellouuuuuu!");
         int a =1;
         int b =2;
         int resultad= a+b;
