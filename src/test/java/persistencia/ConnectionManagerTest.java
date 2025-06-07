@@ -27,7 +27,7 @@ class ConnectionManagerTest {
             connectionManager = null; // Para asegurar que no se use accidentalmente
         }
     }
-
+//comentarios de prueba
     @Test
     void connect() throws SQLException {
         // Intenta establecer una conexión a la base de datos utilizando el método connect() de ConnectionManager.
