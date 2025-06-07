@@ -1,5 +1,5 @@
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+//TlIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
@@ -8,7 +8,6 @@ public class Main {
         System.out.println("Holaaaaaaaaa!");
         System.out.println("hola menoles!");
         System.out.println("hellouuuuuu!");
-
         int a =1;
         int b =2;
         int resultad= a+b;
