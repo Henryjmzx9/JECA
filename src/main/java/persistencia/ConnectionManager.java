@@ -10,24 +10,27 @@ import java.sql.SQLException; // Representa errores específicos de la base de d
  * de la clase y, por lo tanto, una única conexión a la base de datos compartida.
  */
 public class ConnectionManager {
+
     /**
      * Define la cadena de conexión a la base de datos. Contiene la información
-     * necesaria para establecer la comunicación con el servidor de base de datos.
+     * necesaria para establecer la comunicación con el servidor de base de datos en Somee.com.
      *
      * - jdbc:sqlserver://... : Indica el tipo de conexión (JDBC para SQL Server).
-     * - DESKTOP-9KSCT6V\\SQLEXPRESS01:1433 : Dirección del servidor y puerto.
-     * - encrypt=true : Indica si la conexión debe ser encriptada.
-     * - database=Inventario : Especifica la base de datos a la que se quiere conectar.
-     * - trustServerCertificate=true : Indica que se confíe en el certificado del servidor (para entornos de desarrollo).
-     * - user=dev : Nombre de usuario para la autenticación.
-     * - password=dev : Contraseña para la autenticación.
+     * - AgenciaViajesDB.mssql.somee.com:1433 : Dirección del servidor de la base de datos y puerto.
+     * - packetSize=4096 : Tamaño del paquete de datos.
+     * - user / password : Credenciales de autenticación para la base de datos.
+     * - persistSecurityInfo=False : No mantener info sensible en memoria tras conexión.
+     * - databaseName=AgenciaViajesDB : Nombre de la base de datos remota en Somee.com.
+     * - trustServerCertificate=True : Confía en el certificado SSL del servidor (útil para entornos de pruebas).
      */
-    private static final String STR_CONNECTION = "jdbc:sqlserver://DESKTOP-0TG6QTK\\SQLEXPRESS:1433;" +
-            "encrypt=true;" +
-            "database=AgenciaViajesDB;" +
-            "trustServerCertificate=true;" +
-            "user=java2025;" +
-            "password=12345;";
+    private static final String STR_CONNECTION =
+            "jdbc:sqlserver://AgenciaViajesDB.mssql.somee.com:1433;" +
+                    "packetSize=4096;" +
+                    "user=Marcosgtzx7_SQLLogin_1;" +
+                    "password=ny3wicw4y6;" +
+                    "persistSecurityInfo=False;" +
+                    "databaseName=AgenciaViajesDB;" +
+                    "trustServerCertificate=True;";
 
     /**
      * Representa la conexión activa a la base de datos. Inicialmente es nula.
@@ -35,7 +38,7 @@ public class ConnectionManager {
     private Connection connection;
 
     /**
-     * Única instancia de la clase JDBCConnectionManager (para el patrón Singleton).
+     * Única instancia de la clase ConnectionManager (para el patrón Singleton).
      * Se inicializa a null y se crea solo cuando se necesita por primera vez.
      */
     private static ConnectionManager instance;
@@ -107,16 +110,16 @@ public class ConnectionManager {
 
     /**
      * Este método estático y sincronizado (`synchronized`) implementa el patrón Singleton.
-     * Devuelve la única instancia de JDBCConnectionManager. Si la instancia aún no existe,
+     * Devuelve la única instancia de ConnectionManager. Si la instancia aún no existe,
      * la crea antes de devolverla. La sincronización asegura que la creación de la instancia
      * sea segura en entornos multihilo (que varios hilos no intenten crear la instancia al mismo tiempo).
      *
-     * @return La única instancia de JDBCConnectionManager.
+     * @return La única instancia de ConnectionManager.
      */
     public static synchronized ConnectionManager getInstance() {
         // Verifica si la instancia ya ha sido creada.
         if (instance == null) {
-            // Si no existe, crea una nueva instancia de JDBCConnectionManager.
+            // Si no existe, crea una nueva instancia de ConnectionManager.
             instance = new ConnectionManager();
         }
         // Retorna la instancia existente (o la recién creada).
