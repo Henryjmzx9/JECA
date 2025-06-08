@@ -29,6 +29,7 @@ class ConnectionManagerTest {
     }
 //comentarios de prueba
 //comentarios de prueba
+//comentarios de prueba
     @Test
     void connect() throws SQLException {
         // Intenta establecer una conexión a la base de datos utilizando el método connect() de ConnectionManager.
@@ -44,4 +45,5 @@ class ConnectionManagerTest {
             conn.close(); // Cierra la conexión después de la prueba.
         }
     }
+
 }
