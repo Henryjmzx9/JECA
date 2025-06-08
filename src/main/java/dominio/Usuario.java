@@ -1,6 +1,6 @@
 package dominio;
 
-import enums.Rol;
+import utils.Rol;
 
 public class Usuario {
     private int id;
