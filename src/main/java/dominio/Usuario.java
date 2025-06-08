@@ -2,7 +2,7 @@ package dominio;
 
 import utils.Rol;
 
-public class Usuario {
+public class  Usuario {
     private int id;
     private String name;
     private String passwordHash;
