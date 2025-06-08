@@ -10,11 +10,11 @@ public class Paquete {
     private int duracionDias;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private Destino destino;
+    private int destinoId;
 
     public Paquete() {
     }
-    public Paquete(int paqueteId, String nombre, String descripcion, double precio, int duracionDias, LocalDate fechaInicio, LocalDate fechaFin, Destino destino) {
+    public Paquete(int paqueteId, String nombre, String descripcion, double precio, int duracionDias, LocalDate fechaInicio, LocalDate fechaFin, int destinoId) {
         this.paqueteId = paqueteId;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -22,7 +22,7 @@ public class Paquete {
         this.duracionDias = duracionDias;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
-        this.destino = destino;
+        this.destinoId = destinoId;
     }
 
     public int getPaqueteId() {
@@ -81,11 +81,11 @@ public class Paquete {
         this.fechaFin = fechaFin;
     }
 
-    public Destino getDestino() {
-        return destino;
+    public int getDestinoId() {
+        return destinoId;
     }
 
-    public void setDestino(Destino destino) {
-        this.destino = destino;
+    public void setDestinoId(int destinoId) {
+        this.destinoId = destinoId;
     }
 }
