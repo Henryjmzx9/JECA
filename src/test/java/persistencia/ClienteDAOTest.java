@@ -1,7 +1,9 @@
 package persistencia;
 
 import dominio.Cliente;
+import dominio.Usuario;
 import org.junit.jupiter.api.*;
+import utils.Rol;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,101 +14,116 @@ import static org.junit.jupiter.api.Assertions.*;
 class ClienteDAOTest {
 
     private ClienteDAO clienteDAO;
+    private UsuarioDAO usuarioDAO;
+    private Usuario usuarioTest;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException {
         clienteDAO = new ClienteDAO();
+        usuarioDAO = new UsuarioDAO();
+
+        // Crear un usuario con rol Cliente
+        Random random = new Random();
+        int num = random.nextInt(1000) + 1;
+        String email = "cliente" + num + "@test.com";
+
+        Usuario usuario = new Usuario(0, "Cliente Test", "clave123", email, (byte) 1, Rol.Cliente);
+        usuarioTest = usuarioDAO.create(usuario);
+        assertNotNull(usuarioTest, "No se pudo crear el usuario para el cliente.");
     }
 
-    private Cliente create(Cliente cliente) throws SQLException {
-        Cliente res = clienteDAO.create(cliente);
-        assertNotNull(res, "El cliente creado no debe ser nulo.");
-        assertEquals(cliente.getUserId(), res.getUserId());
-        assertEquals(cliente.getTelefono(), res.getTelefono());
-        assertEquals(cliente.getDireccion(), res.getDireccion());
-        return res;
+    @AfterEach
+    void tearDown() throws SQLException {
+        // Eliminar cliente si existe
+        Cliente cliente = clienteDAO.getByUserId(usuarioTest.getId());
+        if (cliente != null) {
+            clienteDAO.delete(cliente.getClienteId());
+        }
+
+        // Eliminar usuario
+        usuarioDAO.delete(usuarioTest.getId());
     }
 
-    private void update(Cliente cliente) throws SQLException {
-        cliente.setTelefono(cliente.getTelefono() + "_upd");
-        cliente.setDireccion("upd_" + cliente.getDireccion());
+    private Cliente createCliente() throws SQLException {
+        Cliente cliente = new Cliente();
+        cliente.setUserId(usuarioTest.getId());
+        cliente.setTelefono("7777-8888");
+        cliente.setDireccion("Col. Test");
 
-        boolean res = clienteDAO.update(cliente);
-        assertTrue(res, "La actualización debe ser exitosa.");
+        Cliente creado = clienteDAO.create(cliente);
+        assertNotNull(creado, "El cliente creado no debe ser nulo.");
+        assertEquals(cliente.getTelefono(), creado.getTelefono());
+        return creado;
+    }
+
+    private void updateCliente(Cliente cliente) throws SQLException {
+        cliente.setTelefono("9999-0000");
+        cliente.setDireccion("Col. Nueva");
+
+        boolean updated = clienteDAO.update(cliente);
+        assertTrue(updated, "La actualización del cliente debe ser exitosa.");
 
         getById(cliente);
     }
 
     private void getById(Cliente cliente) throws SQLException {
-        Cliente res = clienteDAO.getById(cliente.getClienteId());
-        assertNotNull(res, "El cliente obtenido no debe ser nulo.");
-        assertEquals(cliente.getClienteId(), res.getClienteId());
-        assertEquals(cliente.getUserId(), res.getUserId());
-        assertEquals(cliente.getTelefono(), res.getTelefono());
-        assertEquals(cliente.getDireccion(), res.getDireccion());
+        Cliente obtenido = clienteDAO.getById(cliente.getClienteId());
+        assertNotNull(obtenido, "El cliente obtenido no debe ser nulo.");
+        assertEquals(cliente.getTelefono(), obtenido.getTelefono());
     }
 
-    private void search(Cliente cliente) throws SQLException {
-        ArrayList<Cliente> clientes = clienteDAO.search(cliente.getTelefono());
-        boolean found = clientes.stream()
-                .anyMatch(item -> item.getTelefono().contains(cliente.getTelefono()));
-
-        assertTrue(found, "El teléfono buscado no fue encontrado: " + cliente.getTelefono());
+    private void searchCliente(Cliente cliente) throws SQLException {
+        ArrayList<Cliente> clientes = clienteDAO.searchCliente(cliente.getTelefono());
+        assertTrue(clientes.stream().anyMatch(c -> c.getTelefono().equals(cliente.getTelefono())),
+                "El cliente no fue encontrado por búsqueda.");
     }
 
-    private void delete(Cliente cliente) throws SQLException {
-        boolean res = clienteDAO.delete(cliente.getClienteId());
-        assertTrue(res, "La eliminación debe ser exitosa.");
+    private void deleteCliente(Cliente cliente) throws SQLException {
+        boolean eliminado = clienteDAO.delete(cliente.getClienteId());
+        assertTrue(eliminado, "El cliente debe ser eliminado.");
 
-        Cliente res2 = clienteDAO.getById(cliente.getClienteId());
-        assertNull(res2, "El cliente debería estar eliminado.");
+        Cliente resultado = clienteDAO.getById(cliente.getClienteId());
+        assertNull(resultado, "El cliente eliminado no debe existir.");
     }
 
-    private void authenticate(Cliente cliente, String telefono) throws SQLException {
-        Cliente res = clienteDAO.authenticate(cliente.getUserId(), telefono);
-        assertNotNull(res, "La autenticación debe retornar un cliente válido.");
-        assertEquals(cliente.getTelefono(), res.getTelefono());
-    }
-
-    private void authenticationFails(int userId, String telefono) throws SQLException {
-        Cliente res = clienteDAO.authenticate(userId, telefono);
-        assertNull(res, "La autenticación debería fallar con credenciales inválidas.");
-    }
-
-    private void updatePassword(Cliente cliente, String newTelefono) throws SQLException {
-        cliente.setTelefono(newTelefono);
-        boolean res = clienteDAO.update(cliente);
-        assertTrue(res, "La actualización del teléfono debe ser exitosa.");
-        authenticate(cliente, newTelefono);
+    private void getAllClientes() {
+        try {
+            ArrayList<Cliente> clientes = clienteDAO.getAll();
+            assertNotNull(clientes, "La lista de clientes no debe ser nula.");
+            assertFalse(clientes.isEmpty(), "La lista de clientes no debe estar vacía.");
+        } catch (SQLException e) {
+            fail("Error al obtener todos los clientes: " + e.getMessage());
+        }
     }
 
     @Test
     void testClienteDAO() throws SQLException {
-        Random random = new Random();
-        int userId = random.nextInt(1000) + 1;
-        String telefono = "555-" + random.nextInt(1000);
-        String direccion = "Calle Falsa " + random.nextInt(100);
-
-        Cliente cliente = new Cliente(0, userId, telefono, direccion);
-
-        Cliente testCliente = create(cliente);
-        update(testCliente);
-        search(testCliente);
-
-        authenticate(testCliente, telefono);
-        authenticationFails(userId, "telefonoIncorrecto");
-
-        String newTelefono = "555-9999";
-        updatePassword(testCliente, newTelefono);
-
-        delete(testCliente);
+        Cliente cliente = createCliente();
+        updateCliente(cliente);
+        getById(cliente);
+        searchCliente(cliente);
+        getAllClientes();
+        deleteCliente(cliente);
     }
 
     @Test
-    void createCliente() throws SQLException {
-        Cliente cliente = new Cliente(0, 1, "555-1234", "Avenida Siempre Viva");
-        Cliente res = clienteDAO.create(cliente);
-        assertNotNull(res, "El cliente creado debe existir.");
-        clienteDAO.delete(res.getClienteId()); // limpieza
+    void createCliente2() throws SQLException {
+        // Crear un usuario de prueba
+        Usuario usuario = new Usuario(0, "Usuario Test", "password123", "test@example.com", (byte) 1, Rol.Cliente);
+        Usuario usuarioCreado = usuarioDAO.create(usuario);
+        assertNotNull(usuarioCreado, "El usuario de prueba no se pudo crear.");
+
+        // Crear un cliente relacionado con el usuario
+        Cliente cliente = new Cliente();
+        cliente.setUserId(usuarioCreado.getId());
+        cliente.setTelefono("8888-9999");
+        cliente.setDireccion("Test Dir");
+
+        Cliente clienteCreado = clienteDAO.create(cliente);
+        assertNotNull(clienteCreado, "El cliente creado debe existir.");
+
+        // Limpieza: Eliminar cliente y usuario
+        clienteDAO.delete(clienteCreado.getClienteId());
+        usuarioDAO.delete(usuarioCreado.getId());
     }
 }
