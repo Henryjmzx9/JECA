@@ -4,8 +4,8 @@ GO
 USE AgenciaViajesDB;
 GO
 
--- Tabla: Usuarios (con campo Rol directamente)
-CREATE TABLE Usuarios (
+-- Tabla: Users (con campo Rol directamente)
+CREATE TABLE Users (
     id INT PRIMARY KEY IDENTITY(1,1),
     name VARCHAR(100) NOT NULL,
     passwordHash VARCHAR(64) NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE Clientes (
     userId INT UNIQUE,
     telefono VARCHAR(20),
     direccion VARCHAR(200),
-    FOREIGN KEY (userId) REFERENCES Usuarios(id)
+    FOREIGN KEY (userId) REFERENCES Users(id)
 );
 GO
 
