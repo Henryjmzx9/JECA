@@ -21,7 +21,6 @@ class UsuarioDAOTest {
 
     private Usuario create(Usuario usuario) throws SQLException {
         Usuario res = usuarioDAO.create(usuario);
-
         assertNotNull(res, "El usuario creado no debe ser nulo.");
         assertEquals(usuario.getName(), res.getName());
         assertEquals(usuario.getEmail(), res.getEmail());
@@ -51,16 +50,8 @@ class UsuarioDAOTest {
 
     private void search(Usuario usuario) throws SQLException {
         ArrayList<Usuario> usuarios = usuarioDAO.search(usuario.getName());
-        boolean found = false;
-
-        for (Usuario item : usuarios) {
-            if (item.getName().contains(usuario.getName())) {
-                found = true;
-            } else {
-                found = false;
-                break;
-            }
-        }
+        boolean found = usuarios.stream()
+                .anyMatch(item -> item.getName().contains(usuario.getName()));
 
         assertTrue(found, "El nombre buscado no fue encontrado: " + usuario.getName());
     }
@@ -69,7 +60,7 @@ class UsuarioDAOTest {
         Usuario res = usuarioDAO.authenticate(usuario.getEmail(), password);
         assertNotNull(res, "La autenticación debe retornar un usuario válido.");
         assertEquals(usuario.getEmail(), res.getEmail());
-        assertEquals(res.getStatus(), 1);
+        assertEquals(1, res.getStatus());
     }
 
     private void authenticateFail(String email, String password) throws SQLException {
@@ -98,7 +89,7 @@ class UsuarioDAOTest {
         int num = random.nextInt(1000) + 1;
         String email = "henry" + num + "@test.com";
 
-        Usuario usuario = new Usuario(0, "Henry Test", "clave123", email, (byte) 1, Rol.ADMINISTRADOR);
+        Usuario usuario = new Usuario(0, "Henry Test", "clave123", email, (byte) 1, Rol.Administrador);
 
         Usuario testUser = create(usuario);
         update(testUser);
@@ -118,9 +109,10 @@ class UsuarioDAOTest {
 
     @Test
     void createUser() throws SQLException {
-        Usuario usuario = new Usuario(0, "admin", "12345", "admin@gmail.com", (byte) 1, Rol.ADMINISTRADOR);
+        Usuario usuario = new Usuario(0, "admin", "12345", "admin@gmail.com", (byte) 1, Rol.Administrador);
         Usuario res = usuarioDAO.create(usuario);
         assertNotNull(res, "El usuario creado debe existir.");
         usuarioDAO.delete(res.getId()); // limpieza
     }
 }
+
