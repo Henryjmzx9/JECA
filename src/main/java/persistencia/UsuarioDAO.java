@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class UsuarioDAO {
     private final ConnectionManager conn;
+    private static final String TABLE_NAME = "Users"; // <-- tabla corregida aquí
 
     public UsuarioDAO() {
         conn = ConnectionManager.getInstance();
@@ -16,7 +17,7 @@ public class UsuarioDAO {
 
     public Usuario create(Usuario usuario) throws SQLException {
         Usuario res = null;
-        String sql = "INSERT INTO Usuarios (name, passwordHash, email, status, rol) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + TABLE_NAME + " (name, passwordHash, email, status, rol) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -44,7 +45,7 @@ public class UsuarioDAO {
 
     public boolean update(Usuario usuario) throws SQLException {
         boolean res;
-        String sql = "UPDATE Usuarios SET name = ?, email = ?, status = ?, rol = ? WHERE id = ?";
+        String sql = "UPDATE " + TABLE_NAME + " SET name = ?, email = ?, status = ?, rol = ? WHERE id = ?";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -58,9 +59,10 @@ public class UsuarioDAO {
         }
         return res;
     }
+
     public boolean updatePassword(Usuario usuario) throws SQLException {
         boolean res;
-        String sql = "UPDATE Usuarios SET passwordHash = ? WHERE id = ?";
+        String sql = "UPDATE " + TABLE_NAME + " SET passwordHash = ? WHERE id = ?";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -75,7 +77,7 @@ public class UsuarioDAO {
 
     public boolean delete(int id) throws SQLException {
         boolean res;
-        String sql = "DELETE FROM Usuarios WHERE id = ?";
+        String sql = "DELETE FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -87,7 +89,7 @@ public class UsuarioDAO {
 
     public Usuario getById(int id) throws SQLException {
         Usuario usuario = null;
-        String sql = "SELECT id, name, passwordHash, email, status, rol FROM Usuarios WHERE id = ?";
+        String sql = "SELECT id, name, passwordHash, email, status, rol FROM " + TABLE_NAME + " WHERE id = ?";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -109,7 +111,7 @@ public class UsuarioDAO {
 
     public ArrayList<Usuario> search(String name) throws SQLException {
         ArrayList<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT id, name, email, status, rol FROM Usuarios WHERE name LIKE ?";
+        String sql = "SELECT id, name, email, status, rol FROM " + TABLE_NAME + " WHERE name LIKE ?";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -129,10 +131,9 @@ public class UsuarioDAO {
         return usuarios;
     }
 
-    // Nuevo método de autenticación
     public Usuario authenticate(String email, String plainPassword) throws SQLException {
         Usuario usuario = null;
-        String sql = "SELECT id, name, passwordHash, email, status, rol FROM Usuarios WHERE email = ?";
+        String sql = "SELECT id, name, passwordHash, email, status, rol FROM " + TABLE_NAME + " WHERE email = ?";
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -142,12 +143,11 @@ public class UsuarioDAO {
                     String storedHash = rs.getString("passwordHash");
                     String inputHash = PasswordHasher.hashPassword(plainPassword);
 
-                    // Compara hashes
                     if (storedHash.equals(inputHash)) {
                         usuario = new Usuario();
                         usuario.setId(rs.getInt("id"));
                         usuario.setName(rs.getString("name"));
-                        usuario.setPasswordHash(storedHash); // o null si no querés exponerla
+                        usuario.setPasswordHash(storedHash);
                         usuario.setEmail(rs.getString("email"));
                         usuario.setStatus(rs.getByte("status"));
                         usuario.setRol(Rol.valueOf(rs.getString("rol")));
