@@ -131,6 +131,26 @@ public class UsuarioDAO {
         return usuarios;
     }
 
+    public ArrayList<Usuario> getAll() throws SQLException {
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT id, name, email, status, rol FROM " + TABLE_NAME ;
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId(rs.getInt("id"));
+                    usuario.setName(rs.getString("name"));
+                    usuario.setEmail(rs.getString("email"));
+                    usuario.setStatus(rs.getByte("status"));
+                    usuario.setRol(Rol.valueOf(rs.getString("rol")));
+                    usuarios.add(usuario);
+                }
+            }
+        }
+        return usuarios;
+    }
+
     public Usuario authenticate(String email, String plainPassword) throws SQLException {
         Usuario usuario = null;
         String sql = "SELECT id, name, passwordHash, email, status, rol FROM " + TABLE_NAME + " WHERE email = ?";

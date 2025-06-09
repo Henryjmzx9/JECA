@@ -103,10 +103,19 @@ class UsuarioDAOTest {
         updatePassword(testUser, "nuevaClave123");
         testUser.setPasswordHash("nuevaClave123");
         authenticate(testUser, "nuevaClave123");
-
+        getAll();
         delete(testUser);
     }
 
+    private  void getAll(){
+        try {
+            ArrayList<Usuario> usuarios = usuarioDAO.getAll();
+            assertNotNull(usuarios, "La lista de usuarios no debe ser nula.");
+            assertFalse(usuarios.isEmpty(), "La lista de usuarios no debe estar vacía.");
+        } catch (SQLException e) {
+            fail("No se pudo obtener la lista de usuarios: " + e.getMessage());
+        }
+    }
     @Test
     void createUser() throws SQLException {
         Usuario usuario = new Usuario(0, "admin", "12345", "admin@gmail.com", (byte) 1, Rol.Administrador);
@@ -115,4 +124,3 @@ class UsuarioDAOTest {
         usuarioDAO.delete(res.getId()); // limpieza
     }
 }
-
