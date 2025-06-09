@@ -105,7 +105,7 @@ public class DestinoDAO {
         }
         return destinos;
     }
-
+pu
     // Método authenticate: verifica si existe un destino por nombre y país
     public Destino authenticate(String nombre, String pais) throws SQLException {
         Destino destino = null;
