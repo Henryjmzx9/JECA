@@ -15,7 +15,9 @@ public class Cliente {
         this.telefono = telefono;
         this.direccion = direccion;
     }
-
+    public Cliente(int clienteId) {
+        this.clienteId = clienteId;
+    }
     public int getUserId() {
         return userId;
     }

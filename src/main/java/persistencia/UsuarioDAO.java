@@ -3,7 +3,6 @@ package persistencia;
 import dominio.Usuario;
 import utils.PasswordHasher;
 import utils.Rol;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -150,7 +149,20 @@ public class UsuarioDAO {
         }
         return usuarios;
     }
-
+    public static int getIdByEmail(String email) throws SQLException {
+        int userId = -1;
+        String sql = "SELECT id FROM Users WHERE email = ?";
+        try (Connection connection = ConnectionManager.getInstance().connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    userId = rs.getInt("id");
+                }
+            }
+        }
+        return userId;
+    }
     public Usuario authenticate(String email, String plainPassword) throws SQLException {
         Usuario usuario = null;
         String sql = "SELECT id, name, passwordHash, email, status, rol FROM " + TABLE_NAME + " WHERE email = ?";
@@ -175,6 +187,7 @@ public class UsuarioDAO {
                 }
             }
         }
+
         return usuario;
     }
 }

@@ -19,7 +19,6 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
         this.estado = estado;
     }
-
     public int getReservaId() {
         return reservaId;
     }

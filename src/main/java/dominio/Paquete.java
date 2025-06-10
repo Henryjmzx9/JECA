@@ -24,7 +24,9 @@ public class Paquete {
         this.fechaFin = fechaFin;
         this.destinoId = destinoId;
     }
-
+    public Paquete(int paqueteId) {
+        this.paqueteId = paqueteId;
+    }
     public int getPaqueteId() {
         return paqueteId;
     }
