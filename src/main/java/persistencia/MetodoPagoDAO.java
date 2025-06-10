@@ -72,6 +72,22 @@ public class MetodoPagoDAO {
         }
         return metodo;
     }
+    public ArrayList<MetodoPago> getAll() throws SQLException {
+        ArrayList<MetodoPago> lista = new ArrayList<>();
+        String sql = "SELECT metodoPagoId, nombreMetodo FROM " + TABLE_NAME;
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                MetodoPago metodo = new MetodoPago();
+                metodo.setMetodoPagoId(rs.getInt("metodoPagoId"));
+                metodo.setNombreMetodo(rs.getString("nombreMetodo"));
+                lista.add(metodo);
+            }
+        }
+        return lista;
+    }
 
     public ArrayList<MetodoPago> search(String nombreMetodo) throws SQLException {
         ArrayList<MetodoPago> lista = new ArrayList<>();

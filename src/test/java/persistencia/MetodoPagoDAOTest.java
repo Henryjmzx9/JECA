@@ -45,6 +45,13 @@ class MetodoPagoDAOTest {
                 .anyMatch(mp -> mp.getNombreMetodo().contains(metodo.getNombreMetodo()));
         assertTrue(encontrado, "No se encontró el método de pago por nombre.");
     }
+    private void getAll() throws SQLException {
+        ArrayList<MetodoPago> lista = metodoDAO.getAll();
+        assertFalse(lista.isEmpty(), "La lista de métodos de pago no debe estar vacía.");
+        for (MetodoPago mp : lista) {
+            assertNotNull(mp.getNombreMetodo(), "El nombre del método de pago no debe ser nulo.");
+        }
+    }
 
     private void delete(MetodoPago metodo) throws SQLException {
         boolean eliminado = metodoDAO.delete(metodo.getMetodoPagoId());
