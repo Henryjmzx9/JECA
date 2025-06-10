@@ -86,6 +86,7 @@ class MetodoPagoDAOTest {
         MetodoPago creado = create(metodo);
         update(creado);
         search(creado);
+        getAll();
 
         authenticate(creado, creado.getNombreMetodo());
         authenticationFails("NombreInvalido123");
