@@ -11,6 +11,7 @@ public class Paquete {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private int destinoId;
+    private Destino destino;
 
     public Paquete() {
     }
@@ -87,5 +88,13 @@ public class Paquete {
 
     public void setDestinoId(int destinoId) {
         this.destinoId = destinoId;
+    }
+
+    public void setDestino(Destino destino) {
+        this.destino = destino;
+    }
+
+    public Destino getDestino() {
+        return destino;
     }
 }
