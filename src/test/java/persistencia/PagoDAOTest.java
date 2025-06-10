@@ -78,7 +78,11 @@ class PagoDAOTest {
         assertNotNull(pagos, "La búsqueda por reservaId no debe ser nula.");
         assertFalse(pagos.isEmpty(), "Debe haber pagos para la reservaId=6.");
     }
-
+    private void searchByMetodoPagoId() throws SQLException {
+        ArrayList<Pago> pagos = pagoDAO.searchByMetodoPagoId(1);
+        assertNotNull(pagos, "La búsqueda por metodoPagoId no debe ser nula.");
+        assertFalse(pagos.isEmpty(), "Debe haber pagos para el metodoPagoId=1.");
+    }
     private void deletePago(Pago pago) throws SQLException {
         boolean eliminado = pagoDAO.delete(pago.getPagoId());
         assertTrue(eliminado, "El pago debe eliminarse correctamente.");
@@ -95,6 +99,7 @@ class PagoDAOTest {
         getByIdPago(pago);
         getAllPagos();
         searchByReservaId();
+        searchByMetodoPagoId();
         deletePago(pago);
     }
 }

@@ -102,6 +102,27 @@ public class PagoDAO {
         }
         return pagos;
     }
+    public ArrayList<Pago> searchByMetodoPagoId(int metodoPagoId) throws SQLException {
+        ArrayList<Pago> pagos = new ArrayList<>();
+        String sql = "SELECT pagoId, reservaId, monto, metodoPagoId, fechaPago FROM " + TABLE_NAME + " WHERE metodoPagoId = ?";
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, metodoPagoId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Pago pago = new Pago();
+                    pago.setPagoId(rs.getInt("pagoId"));
+                    pago.setReservaId(rs.getInt("reservaId"));
+                    pago.setMonto(rs.getDouble("monto"));
+                    pago.setMetodoPagoId(rs.getInt("metodoPagoId"));
+                    pago.setFechaPago(rs.getDate("fechaPago"));
+                    pagos.add(pago);
+                }
+            }
+        }
+        return pagos;
+    }
 
     public ArrayList<Pago> getAll() throws SQLException {
         ArrayList<Pago> pagos = new ArrayList<>();
