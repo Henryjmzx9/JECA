@@ -105,7 +105,25 @@ public class DestinoDAO {
         }
         return destinos;
     }
-pu
+public ArrayList<Destino> getAll() throws SQLException {
+        ArrayList<Destino> destinos = new ArrayList<>();
+        String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME;
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Destino destino = new Destino();
+                destino.setDestinoId(rs.getInt("destinoId"));
+                destino.setNombre(rs.getString("nombre"));
+                destino.setPais(rs.getString("pais"));
+                destino.setDescripcion(rs.getString("descripcion"));
+                destino.setImagen(rs.getBytes("imagen"));
+                destinos.add(destino);
+            }
+        }
+        return destinos;
+    }
     // Método authenticate: verifica si existe un destino por nombre y país
     public Destino authenticate(String nombre, String pais) throws SQLException {
         Destino destino = null;
