@@ -45,5 +45,22 @@ class ConnectionManagerTest {
             conn.close(); // Cierra la conexión después de la prueba.
         }
     }
+    @Test
+    void verBaseYTablas() throws SQLException {
+        Connection conn = connectionManager.connect();
+        System.out.println("Base conectada: " + conn.getCatalog());
+
+        var stmt = conn.createStatement();
+        var rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES");
+
+        while (rs.next()) {
+            System.out.println("Tabla: " + rs.getString("TABLE_NAME"));
+        }
+
+        rs.close();
+        stmt.close();
+        conn.close();
+    }
+
 
 }

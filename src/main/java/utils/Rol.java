@@ -1,9 +1,9 @@
-package enums;
+package utils;
 
 public enum Rol {
-    ADMINISTRADOR("Administrador"),
-    AGENTE("Agente"),
-    CLIENTE("Cliente");
+    Administrador("Administrador"),
+    Agente("Agente"),
+    Cliente("Cliente");
 
     private final String valor;
 

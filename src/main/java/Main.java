@@ -13,7 +13,5 @@ public class Main {
         int resultad= a+b;
         System.out.println(resultad);
         System.out.println("Hola, mundo!");
-
-
     }
 }

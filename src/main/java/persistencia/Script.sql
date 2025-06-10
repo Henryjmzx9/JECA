@@ -4,14 +4,14 @@ GO
 USE AgenciaViajesDB;
 GO
 
--- Tabla: Usuarios (con campo Rol directamente)
-CREATE TABLE Usuarios (
+-- Tabla: Users (con campo Rol directamente)
+CREATE TABLE Users (
     id INT PRIMARY KEY IDENTITY(1,1),
     name VARCHAR(100) NOT NULL,
     passwordHash VARCHAR(64) NOT NULL,
     email VARCHAR(200) NOT NULL UNIQUE,
     status TINYINT NOT NULL, -- 1 = Activo, 0 = Inactivo
-    rol NVARCHAR(20) CHECK (rol IN ('Administrador', 'Agente', 'Cliente')) NOT NULL
+    rol NVARCHAR(20)   (rol IN ('Administrador', 'Agente', 'Cliente')) NOT NULL
 );
 GO
 
@@ -21,7 +21,7 @@ CREATE TABLE Clientes (
     userId INT UNIQUE,
     telefono VARCHAR(20),
     direccion VARCHAR(200),
-    FOREIGN KEY (userId) REFERENCES Usuarios(id)
+    FOREIGN KEY (userId) REFERENCES Users(id)
 );
 GO
 
