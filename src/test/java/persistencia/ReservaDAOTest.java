@@ -100,6 +100,11 @@ class ReservaDAOTest {
         Reserva actualizada = reservaDAO.getById(reserva.getReservaId());
         assertEquals(EstadoReserva.CONFIRMADA, actualizada.getEstado());
     }
+    private void seach(Reserva reserva) throws SQLException {
+        Reserva encontrada = reservaDAO.getById(reserva.getReservaId());
+        assertNotNull(encontrada, "La reserva encontrada no debe ser nula.");
+        assertEquals(reserva.getEstado(), encontrada.getEstado());
+    }
 
     private void deleteReserva(Reserva reserva) throws SQLException {
         boolean deleted = reservaDAO.delete(reserva.getReservaId());
@@ -125,6 +130,7 @@ class ReservaDAOTest {
     void testReservaDAO() throws SQLException {
         Reserva reserva = createReserva();
         updateReserva(reserva);
+        seach(reserva);
         getByIdReserva(reserva);
         getAllReservas();
         deleteReserva(reserva);
