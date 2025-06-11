@@ -3,6 +3,7 @@ package persistencia;
 import dominio.Destino;
 import dominio.Paquete;
 import org.junit.jupiter.api.*;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ class PaqueteDAOTest {
         destinoDAO = new DestinoDAO();
         paqueteDAO = new PaqueteDAO();
 
-        // Crear un destino de prueba
+        // Crear destino de prueba
         Random random = new Random();
         int num = random.nextInt(1000) + 1;
 
@@ -29,7 +30,7 @@ class PaqueteDAOTest {
         destino.setNombre("Destino Test " + num);
         destino.setPais("El Salvador");
         destino.setDescripcion("Un destino de prueba.");
-        destino.setImagen(null); // o una imagen en bytes si deseas
+        destino.setImagen(null);
 
         destinoTest = destinoDAO.create(destino);
         assertNotNull(destinoTest, "El destino de prueba no se pudo crear.");
@@ -53,8 +54,6 @@ class PaqueteDAOTest {
         paquete.setDescripcion("Incluye todo.");
         paquete.setPrecio(250.0);
         paquete.setDestinoId(destinoTest.getDestinoId());
-
-        // Setear fechas válidas
         paquete.setFechaInicio(LocalDate.now());
         paquete.setFechaFin(LocalDate.now().plusDays(5));
 
@@ -63,7 +62,6 @@ class PaqueteDAOTest {
         assertEquals(paquete.getNombre(), creado.getNombre());
         return creado;
     }
-
 
     private void updatePaquete(Paquete paquete) throws SQLException {
         paquete.setDescripcion("Actualizado!");
@@ -82,12 +80,10 @@ class PaqueteDAOTest {
     }
 
     private void searchPaquete(Paquete paquete) throws SQLException {
-        // Cambiar search a searchPaquete para que coincida con la firma
         ArrayList<Paquete> paquetes = paqueteDAO.searchPaquete(paquete.getNombre());
         assertTrue(paquetes.stream().anyMatch(p -> p.getNombre().equals(paquete.getNombre())),
                 "El paquete no fue encontrado por búsqueda.");
     }
-
 
     private void deletePaquete(Paquete paquete) throws SQLException {
         boolean eliminado = paqueteDAO.delete(paquete.getPaqueteId());
@@ -119,17 +115,19 @@ class PaqueteDAOTest {
 
     @Test
     void createPaquete2() throws SQLException {
-        // Crear otro paquete con valores distintos
         Paquete paquete = new Paquete();
         paquete.setNombre("Paquete Test 2");
         paquete.setDescripcion("Otro paquete de prueba.");
         paquete.setPrecio(199.99);
         paquete.setDestino(destinoTest);
+        paquete.setDestinoId(destinoTest.getDestinoId()); // ✅ Corrección clave foránea
+
+        paquete.setFechaInicio(LocalDate.now());
+        paquete.setFechaFin(LocalDate.now().plusDays(3));
 
         Paquete paqueteCreado = paqueteDAO.create(paquete);
         assertNotNull(paqueteCreado, "El paquete creado debe existir.");
 
-        // Limpieza
         paqueteDAO.delete(paqueteCreado.getPaqueteId());
     }
 }

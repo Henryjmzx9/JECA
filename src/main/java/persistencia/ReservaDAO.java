@@ -25,9 +25,9 @@ public class ReservaDAO {
             ps.setInt(1, reserva.getCliente().getClienteId());
             ps.setInt(2, reserva.getPaquete().getPaqueteId());
             ps.setDate(3, Date.valueOf(reserva.getFechaReserva()));
-            ps.setString(4, reserva.getEstado().name());
+            ps.setString(4, reserva.getEstado().getValor());
 
-            int affectedRows = ps.executeUpdate();
+             int affectedRows = ps.executeUpdate();
             if (affectedRows != 0) {
                 try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
@@ -51,7 +51,7 @@ public class ReservaDAO {
             ps.setInt(1, reserva.getCliente().getClienteId());
             ps.setInt(2, reserva.getPaquete().getPaqueteId());
             ps.setDate(3, Date.valueOf(reserva.getFechaReserva()));
-            ps.setString(4, reserva.getEstado().name());
+            ps.setString(4, reserva.getEstado().getValor());
             ps.setInt(5, reserva.getReservaId());
 
             res = ps.executeUpdate() > 0;
@@ -85,7 +85,12 @@ public class ReservaDAO {
                     reserva.setCliente(new Cliente(rs.getInt("clienteId")));
                     reserva.setPaquete(new Paquete(rs.getInt("paqueteId")));
                     reserva.setFechaReserva(rs.getDate("fechaReserva").toLocalDate());
-                    reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
+                    try {
+                        reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado").toUpperCase())); // Convierte el valor a mayúsculas para evitar problemas de formato
+                    } catch (IllegalArgumentException e) {
+
+                        reserva.setEstado(null); // O asigna un valor predeterminado, si corresponde
+                    }
                 }
             }
         }
@@ -105,7 +110,12 @@ public class ReservaDAO {
                 reserva.setCliente(new Cliente(rs.getInt("clienteId")));
                 reserva.setPaquete(new Paquete(rs.getInt("paqueteId")));
                 reserva.setFechaReserva(rs.getDate("fechaReserva").toLocalDate());
-                reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
+                try {
+                    reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado").toUpperCase())); // Convierte el valor a mayúsculas para evitar problemas de formato
+                } catch (IllegalArgumentException e) {
+
+                    reserva.setEstado(null); // O asigna un valor predeterminado, si corresponde
+                }
                 reservas.add(reserva);
             }
         }
@@ -135,7 +145,12 @@ public class ReservaDAO {
                     reserva.setCliente(new Cliente(rs.getInt("clienteId")));
                     reserva.setPaquete(new Paquete(rs.getInt("paqueteId")));
                     reserva.setFechaReserva(rs.getDate("fechaReserva").toLocalDate());
-                    reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado")));
+                    try {
+                        reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado").toUpperCase())); // Convierte el valor a mayúsculas para evitar problemas de formato
+                    } catch (IllegalArgumentException e) {
+
+                        reserva.setEstado(null); // O asigna un valor predeterminado, si corresponde
+                    }
                     resultados.add(reserva);
                 }
             }
