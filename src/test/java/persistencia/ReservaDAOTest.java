@@ -3,13 +3,15 @@ package persistencia;
 import dominio.Cliente;
 import dominio.Paquete;
 import dominio.Reserva;
+import dominio.Usuario;
 import utils.EstadoReserva;
+import utils.Rol;
 import org.junit.jupiter.api.*;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,40 +20,45 @@ class ReservaDAOTest {
     private ClienteDAO clienteDAO;
     private PaqueteDAO paqueteDAO;
     private ReservaDAO reservaDAO;
+    private UsuarioDAO usuarioDAO;
 
     private Cliente clienteTest;
     private Paquete paqueteTest;
+    private Usuario usuarioTest;
 
     @BeforeEach
     void setUp() throws SQLException {
         clienteDAO = new ClienteDAO();
         paqueteDAO = new PaqueteDAO();
         reservaDAO = new ReservaDAO();
+        usuarioDAO = new UsuarioDAO();
 
-        // Obtener el userId del usuario existente
-        int existingUserId = UsuarioDAO.getIdByEmail("carlos.mendoza123@gmail.com"); // Método para obtener userId por email
-        assertTrue(existingUserId > 0, "El usuario Carlos Mendoza no existe en la base de datos.");
-
-        // Crear cliente de prueba
+        // Crear usuario de prueba único para esta reserva
         Random random = new Random();
         int num = random.nextInt(1000) + 1;
+        String email = "reservacliente" + num + "@test.com";
 
+        Usuario usuario = new Usuario(0, "Cliente Reserva", "clave123", email, (byte) 1, Rol.Cliente);
+        usuarioTest = usuarioDAO.create(usuario);
+        assertNotNull(usuarioTest, "No se pudo crear el usuario de prueba.");
+
+        // Crear cliente asociado
         Cliente cliente = new Cliente();
-        cliente.setUserId(existingUserId); // Asociar el userId existente
+        cliente.setUserId(usuarioTest.getId());
         cliente.setTelefono("12345678");
         cliente.setDireccion("Dirección Test " + num);
 
         clienteTest = clienteDAO.create(cliente);
         assertNotNull(clienteTest, "No se pudo crear el cliente de prueba.");
 
-        // Crear paquete de prueba (recuerda setear fechas)
+        // Crear paquete de prueba
         Paquete paquete = new Paquete();
         paquete.setNombre("Paquete Test " + num);
         paquete.setDescripcion("Incluye todo.");
         paquete.setPrecio(299.99);
         paquete.setFechaInicio(LocalDate.now());
         paquete.setFechaFin(LocalDate.now().plusDays(5));
-        paquete.setDestinoId(8); // Cambia según tus datos disponibles
+        paquete.setDestinoId(8); // Ajustar según tus datos válidos
 
         paqueteTest = paqueteDAO.create(paquete);
         assertNotNull(paqueteTest, "No se pudo crear el paquete de prueba.");
@@ -59,7 +66,7 @@ class ReservaDAOTest {
 
     @AfterEach
     void tearDown() throws SQLException {
-        // Manejar eliminación de datos incluso si las pruebas fallan
+        // Eliminar reservas asociadas
         if (reservaDAO != null) {
             ArrayList<Reserva> reservas = reservaDAO.getAll();
             for (Reserva r : reservas) {
@@ -70,12 +77,19 @@ class ReservaDAOTest {
             }
         }
 
+        // Eliminar paquete
         if (paqueteDAO != null && paqueteTest != null) {
             paqueteDAO.delete(paqueteTest.getPaqueteId());
         }
 
+        // Eliminar cliente
         if (clienteDAO != null && clienteTest != null) {
             clienteDAO.delete(clienteTest.getClienteId());
+        }
+
+        // Eliminar usuario
+        if (usuarioDAO != null && usuarioTest != null) {
+            usuarioDAO.delete(usuarioTest.getId());
         }
     }
 
@@ -100,7 +114,8 @@ class ReservaDAOTest {
         Reserva actualizada = reservaDAO.getById(reserva.getReservaId());
         assertEquals(EstadoReserva.CONFIRMADA, actualizada.getEstado());
     }
-    private void seach(Reserva reserva) throws SQLException {
+
+    private void searchReserva(Reserva reserva) throws SQLException {
         Reserva encontrada = reservaDAO.getById(reserva.getReservaId());
         assertNotNull(encontrada, "La reserva encontrada no debe ser nula.");
         assertEquals(reserva.getEstado(), encontrada.getEstado());
@@ -130,7 +145,7 @@ class ReservaDAOTest {
     void testReservaDAO() throws SQLException {
         Reserva reserva = createReserva();
         updateReserva(reserva);
-        seach(reserva);
+        searchReserva(reserva);
         getByIdReserva(reserva);
         getAllReservas();
         deleteReserva(reserva);
