@@ -124,26 +124,5 @@ public ArrayList<Destino> getAll() throws SQLException {
         }
         return destinos;
     }
-    // Método authenticate: verifica si existe un destino por nombre y país
-    public Destino authenticate(String nombre, String pais) throws SQLException {
-        Destino destino = null;
-        String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME + " WHERE nombre = ? AND pais = ?";
-        try (Connection connection = conn.connect();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setString(1, nombre);
-            ps.setString(2, pais);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    destino = new Destino();
-                    destino.setDestinoId(rs.getInt("destinoId"));
-                    destino.setNombre(rs.getString("nombre"));
-                    destino.setPais(rs.getString("pais"));
-                    destino.setDescripcion(rs.getString("descripcion"));
-                    destino.setImagen(rs.getBytes("imagen"));
-                }
-            }
-        }
-        return destino;
-    }
 }

@@ -59,24 +59,7 @@ class DestinoDAOTest {
         assertNull(res2, "El destino debería estar eliminado.");
     }
 
-    private void authenticate(Destino destino) throws SQLException {
-        Destino res = destinoDAO.authenticate(destino.getNombre(), destino.getPais());
-        assertNotNull(res, "La autenticación debe retornar un destino válido.");
-        assertEquals(destino.getNombre(), res.getNombre());
-        assertEquals(destino.getPais(), res.getPais());
-    }
 
-    private void authenticationFails(String nombre, String pais) throws SQLException {
-        Destino res = destinoDAO.authenticate(nombre, pais);
-        assertNull(res, "La autenticación debería fallar con nombre/pais incorrectos.");
-    }
-
-    private void updatePassword(Destino destino, String nuevoPais) throws SQLException {
-        destino.setPais(nuevoPais);
-        boolean res = destinoDAO.update(destino);
-        assertTrue(res, "La actualización del país debe ser exitosa.");
-        authenticate(destino);
-    }
 
     @Test
     void testDestinoDAO() throws SQLException {
@@ -91,12 +74,7 @@ class DestinoDAOTest {
         Destino testDestino = create(destino);
         update(testDestino);
         search(testDestino);
-
-        authenticate(testDestino);
-        authenticationFails("Invalido", "Incorrecto");
-
         String nuevoPais = "PaisActualizado";
-        updatePassword(testDestino, nuevoPais);
 
         delete(testDestino);
     }
