@@ -27,8 +27,7 @@ class ConnectionManagerTest {
             connectionManager = null; // Para asegurar que no se use accidentalmente
         }
     }
-//comentarios de prueba
-//comentarios de prueba
+
 //comentarios de prueba
     @Test
     void connect() throws SQLException {
@@ -46,21 +45,37 @@ class ConnectionManagerTest {
         }
     }
     @Test
-    void verBaseYTablas() throws SQLException {
+    void verBaseTablasYCampos() throws SQLException {
         Connection conn = connectionManager.connect();
         System.out.println("Base conectada: " + conn.getCatalog());
 
-        var stmt = conn.createStatement();
-        var rs = stmt.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES");
+        var stmtTablas = conn.createStatement();
+        var rsTablas = stmtTablas.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'");
 
-        while (rs.next()) {
-            System.out.println("Tabla: " + rs.getString("TABLE_NAME"));
+        while (rsTablas.next()) {
+            String nombreTabla = rsTablas.getString("TABLE_NAME");
+            System.out.println("\nTabla: " + nombreTabla);
+
+            // Ahora obtener las columnas de esta tabla
+            var stmtColumnas = conn.createStatement();
+            var rsColumnas = stmtColumnas.executeQuery(
+                    "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + nombreTabla + "'");
+
+            while (rsColumnas.next()) {
+                String columna = rsColumnas.getString("COLUMN_NAME");
+                String tipoDato = rsColumnas.getString("DATA_TYPE");
+                System.out.println("   - Campo: " + columna + " (" + tipoDato + ")");
+            }
+
+            rsColumnas.close();
+            stmtColumnas.close();
         }
 
-        rs.close();
-        stmt.close();
+        rsTablas.close();
+        stmtTablas.close();
         conn.close();
     }
+
 
 
 }
