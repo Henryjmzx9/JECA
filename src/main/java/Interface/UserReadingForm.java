@@ -70,7 +70,7 @@ public class UserReadingForm extends JDialog {
     private void search(String query) {
         try {
             ArrayList<Usuario> users = userDAO.search(query);
-            createTable(Users);
+            createTable(users);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
