@@ -15,7 +15,7 @@ public class Main {
             mainForm.setVisible(true); // Se muestra maximizada (ya configurado en MainForm)
 
             // Crea e instancia la ventana de inicio de sesión, pasándole la ventana principal como referencia
-            LoginForm loginForm = new LoginForm(mainForm);
+           LoginForm loginForm = new LoginForm(mainForm);
             loginForm.setVisible(true); // Se muestra primero, solicitando credenciales
         });
     }
