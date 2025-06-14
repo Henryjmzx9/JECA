@@ -14,6 +14,7 @@ public class LoginForm extends JDialog {
     private JLabel TxtEmail;
     private JPasswordField txtPassword;
 
+
     private UsuarioDAO userDAO; // Declaración de una variable de instancia llamada 'userDAO' de tipo UserDAO. Esta variable se utilizará para interactuar con la capa de acceso a datos de los usuarios (por ejemplo, para autenticar usuarios).
     private MainForm mainForm;
 
