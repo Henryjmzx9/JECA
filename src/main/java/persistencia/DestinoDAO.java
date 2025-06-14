@@ -4,7 +4,7 @@ import dominio.Destino;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DestinoDAO {
+public class  DestinoDAO {
     private final ConnectionManager conn;
     private static final String TABLE_NAME = "Destinos";
 

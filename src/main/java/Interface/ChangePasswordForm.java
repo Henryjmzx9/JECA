@@ -8,4 +8,7 @@ public class ChangePasswordForm extends JDialog {
     private JTextField txtEmail;
     private JPasswordField txtPassword;
     private JButton btnChangePassword;
+
+    public ChangePasswordForm(MainForm mainForm) {
+    }
 }
