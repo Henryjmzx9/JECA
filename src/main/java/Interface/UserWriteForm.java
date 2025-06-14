@@ -160,12 +160,12 @@ public class UserWriteForm extends JDialog {
 
                 if (r) {
                     JOptionPane.showMessageDialog(null,
-                            "Transacción realizada exitosamente",
+                            "Usuario registrado correctamente",
                             "Información", JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "No se logró realizar ninguna acción",
+                            "No se logro realizar la operación",
                             "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
