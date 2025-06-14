@@ -2,6 +2,7 @@ package Interface;
 
 import dominio.Destino;
 import persistencia.DestinoDAO;
+import utils.CUD;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,7 @@ public class FormularioDestinoGUI extends JFrame {
 
     private String imagenRuta;
 
-    public FormularioDestinoGUI() {
+    public FormularioDestinoGUI(MainForm mainForm, CUD create, Destino destino) {
         $$$setupUI$$$();  // genera el diseño del .form
         setContentPane(contentPane);
         setTitle("Gestión de Destinos");
@@ -123,14 +124,14 @@ public class FormularioDestinoGUI extends JFrame {
         imagenLabel.setText("Imagen no seleccionada");
         imagenRuta = null;
     }
-
+/*
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            FormularioDestinoGUI ventana = new FormularioDestinoGUI();
+            FormularioDestinoGUI ventana = new FormularioDestinoGUI(this.mainForm, CUD.CREATE, new Destino());
             ventana.setVisible(true);
         });
     }
-
+*/
     private void $$$setupUI$$$() {
         // Este método lo deja IntelliJ tal cual al compilar el .form
     }
