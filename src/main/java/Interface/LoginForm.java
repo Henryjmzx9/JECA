@@ -8,10 +8,9 @@ import java.awt.event.WindowEvent;
 
 public class LoginForm extends JDialog {
     private JPanel mainPanel;
-    private JTextField textField1;
+    private JTextField TxtEmail;
     private JButton btnLogin;
     private JButton btnSalir;
-    private JLabel TxtEmail;
     private JPasswordField txtPassword;
 
 
