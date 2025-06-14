@@ -6,6 +6,8 @@ import utils.CUD;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -86,26 +88,63 @@ public class DestinoReadingForm extends JDialog {
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
+
+            @Override
+            public Class<?> getColumnClass(int column) {
+                if (column == 4) return ImageIcon.class;
+                return String.class;
+            }
         };
 
         model.addColumn("Id");
         model.addColumn("Nombre");
         model.addColumn("País");
         model.addColumn("Descripción");
+        model.addColumn("Imagen");
 
         this.tableDestinos.setModel(model);
 
-        Object row[] = null;
-        for (int i = 0; i < destinos.size(); i++) {
-            Destino destino = destinos.get(i);
-            model.addRow(row);
-            model.setValueAt(destino.getDestinoId(), i, 0);
-            model.setValueAt(destino.getNombre(), i, 1);
-            model.setValueAt(destino.getPais(), i, 2);
-            model.setValueAt(destino.getDescripcion(), i, 3);
+        // Ajustar altura de las filas
+        tableDestinos.setRowHeight(80);
+
+        Object[] row = new Object[5];
+        for (Destino destino : destinos) {
+            row[0] = destino.getDestinoId();
+            row[1] = destino.getNombre();
+            row[2] = destino.getPais();
+            row[3] = destino.getDescripcion();
+
+            byte[] imagenBytes = destino.getImagen();
+            if (imagenBytes != null) {
+                ImageIcon icon = new ImageIcon(imagenBytes);
+                Image imgEscalada = icon.getImage().getScaledInstance(120, 80, Image.SCALE_SMOOTH);
+                row[4] = new ImageIcon(imgEscalada);
+            } else {
+                row[4] = null;
+            }
+
+            model.addRow(row.clone());
         }
 
         hideCol(0);
+
+        // Renderizador para centrar la imagen
+        tableDestinos.getColumnModel().getColumn(4).setCellRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                JLabel label = new JLabel();
+                if (value instanceof ImageIcon) {
+                    label.setIcon((ImageIcon) value);
+                }
+                label.setHorizontalAlignment(SwingConstants.CENTER);
+                label.setVerticalAlignment(SwingConstants.CENTER);
+                return label;
+            }
+        });
+
+        // Ajustar ancho mínimo de columna de imagen
+        tableDestinos.getColumnModel().getColumn(4).setMinWidth(130);
+        tableDestinos.getColumnModel().getColumn(4).setMaxWidth(130);
     }
 
     private void hideCol(int col) {
