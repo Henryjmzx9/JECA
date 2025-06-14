@@ -9,4 +9,7 @@ public class UserReadingForm extends JDialog {
     private JTable tableUsers;
     private JButton btnUpdate;
     private JButton btnDelete;
+
+    public UserReadingForm(MainForm mainForm) {
+    }
 }
