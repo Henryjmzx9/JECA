@@ -166,9 +166,11 @@ public class UsuarioDAO {
     public Usuario authenticate(String email, String plainPassword) throws SQLException {
         Usuario usuario = null;
         String sql = "SELECT id, name, passwordHash, email, status, rol FROM " + TABLE_NAME + " WHERE email = ?";
-        try (Connection connection = conn.connect();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
 
+        try (
+                Connection connection = conn.connect();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -190,4 +192,5 @@ public class UsuarioDAO {
 
         return usuario;
     }
+
 }
