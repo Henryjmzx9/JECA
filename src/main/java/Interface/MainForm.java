@@ -76,6 +76,11 @@ public class MainForm extends JFrame {
             MetodoPagoReadingForm metodoPagoReadingForm = new MetodoPagoReadingForm(this);
             metodoPagoReadingForm.setVisible(true);
         });
-
+        JMenuItem itemPaquetes = new JMenuItem("Paquetes");
+        menuMantenimiento.add(itemPaquetes);
+        itemPaquetes.addActionListener(e -> {
+            ReadingPaqueteViajeForm form = new ReadingPaqueteViajeForm(this);
+            form.setVisible(true);
+        });
     }
 }
