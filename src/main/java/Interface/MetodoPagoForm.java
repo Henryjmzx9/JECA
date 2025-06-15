@@ -2,158 +2,95 @@ package Interface;
 
 import dominio.MetodoPago;
 import persistencia.MetodoPagoDAO;
+import utils.CUD;
 
 import javax.swing.*;
-import java.awt.*;
-import java.sql.SQLException;
 
-public class MetodoPagoForm extends JFrame {
+public class MetodoPagoForm extends JDialog {
     private JPanel metodoPagoPanel;
-    private JTextField nombreMetodoField;
-    private JButton agregarButton;
-    private JButton actualizarButton;
-    private JButton eliminarButton;
-    private JButton buscarButton;
+    private JTextField txtNombreMetodo;
+    private JButton btnOk;
+    private JButton btnCancel;
 
-    private MetodoPagoDAO dao;
-    private MetodoPago metodoActual;
+    private MetodoPagoDAO metodoPagoDAO;
+    private CUD cud;
+    private MetodoPago en;
 
-    public MetodoPagoForm() {
-        // Inicializar panel raíz y componentes
-        metodoPagoPanel = new JPanel(new BorderLayout(10, 10));
-        nombreMetodoField = new JTextField(20);
-        agregarButton = new JButton("Agregar");
-        actualizarButton = new JButton("Actualizar");
-        eliminarButton = new JButton("Eliminar");
-        buscarButton = new JButton("Buscar");
+    // Constructor correcto: recibe parent, cud y MetodoPago
+    public MetodoPagoForm(JFrame parent, CUD cud, MetodoPago metodoPago) {
+        this.cud = cud;
+        this.en = metodoPago;
+        metodoPagoDAO = new MetodoPagoDAO();
 
-        // Panel para botones
-        JPanel botonesPanel = new JPanel();
-        botonesPanel.setLayout(new FlowLayout());
-        botonesPanel.add(agregarButton);
-        botonesPanel.add(actualizarButton);
-        botonesPanel.add(eliminarButton);
-        botonesPanel.add(buscarButton);
-
-        // Panel para campo de texto con etiqueta
-        JPanel campoPanel = new JPanel(new FlowLayout());
-        campoPanel.add(new JLabel("Nombre Método:"));
-        campoPanel.add(nombreMetodoField);
-
-        // Agregar componentes al panel raíz
-        metodoPagoPanel.add(campoPanel, BorderLayout.NORTH);
-        metodoPagoPanel.add(botonesPanel, BorderLayout.SOUTH);
-
-        // Configurar JFrame
         setContentPane(metodoPagoPanel);
-        setTitle("Gestión de Métodos de Pago");
-        setSize(450, 150);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setModal(true);
+        init();
+        pack();
+        setLocationRelativeTo(parent); // ahora sí, porque parent viene como parámetro
 
-        dao = new MetodoPagoDAO();
-
-        configurarEventos();
+        btnCancel.addActionListener(e -> this.dispose());
+        btnOk.addActionListener(e -> ok());
     }
 
-    private void configurarEventos() {
-        agregarButton.addActionListener(e -> agregarMetodoPago());
-        actualizarButton.addActionListener(e -> actualizarMetodoPago());
-        eliminarButton.addActionListener(e -> eliminarMetodoPago());
-        buscarButton.addActionListener(e -> buscarMetodoPago());
-    }
-
-    private void agregarMetodoPago() {
-        String nombre = nombreMetodoField.getText().trim();
-        if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingresa un nombre para agregar.");
-            return;
+    private void init() {
+        switch (this.cud) {
+            case CREATE:
+                setTitle("Agregar Método de Pago");
+                btnOk.setText("Guardar");
+                break;
+            default:
+                // Solo CREATE permitido en este formulario
+                break;
         }
 
-        MetodoPago metodo = new MetodoPago();
-        metodo.setNombreMetodo(nombre);
+        setValuesControls(this.en);
+    }
 
+    private void setValuesControls(MetodoPago metodoPago) {
+        txtNombreMetodo.setText("");
+    }
+
+    private boolean getValuesControls() {
+        if (txtNombreMetodo.getText().trim().isEmpty()) {
+            return false;
+        }
+        this.en.setNombreMetodo(txtNombreMetodo.getText().trim());
+        return true;
+    }
+
+    private void ok() {
         try {
-            MetodoPago creado = dao.create(metodo);
-            if (creado != null) {
-                JOptionPane.showMessageDialog(this, "Método de pago agregado con ID: " + creado.getMetodoPagoId());
-                metodoActual = creado;
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo agregar.");
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al agregar: " + ex.getMessage());
-        }
-    }
+            boolean res = getValuesControls();
 
-    private void actualizarMetodoPago() {
-        if (metodoActual == null) {
-            JOptionPane.showMessageDialog(this, "Primero busca o agrega un método para actualizar.");
-            return;
-        }
+            if (res) {
+                boolean r = false;
 
-        String nuevoNombre = nombreMetodoField.getText().trim();
-        if (nuevoNombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingresa el nuevo nombre.");
-            return;
-        }
-
-        metodoActual.setNombreMetodo(nuevoNombre);
-        try {
-            if (dao.update(metodoActual)) {
-                JOptionPane.showMessageDialog(this, "Método actualizado.");
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo actualizar.");
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al actualizar: " + ex.getMessage());
-        }
-    }
-
-    private void eliminarMetodoPago() {
-        if (metodoActual == null) {
-            JOptionPane.showMessageDialog(this, "Primero busca un método para eliminar.");
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Eliminar este método?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                if (dao.delete(metodoActual.getMetodoPagoId())) {
-                    JOptionPane.showMessageDialog(this, "Método eliminado.");
-                    metodoActual = null;
-                    nombreMetodoField.setText("");
-                } else {
-                    JOptionPane.showMessageDialog(this, "No se pudo eliminar.");
+                if (this.cud == CUD.CREATE) {
+                    MetodoPago mp = metodoPagoDAO.create(this.en);
+                    if (mp.getMetodoPagoId() > 0) {
+                        r = true;
+                    }
                 }
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Error al eliminar: " + ex.getMessage());
-            }
-        }
-    }
 
-    private void buscarMetodoPago() {
-        String nombre = nombreMetodoField.getText().trim();
-        if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingresa un nombre para buscar.");
-            return;
-        }
-
-        try {
-            MetodoPago encontrado = dao.authenticate(nombre);
-            if (encontrado != null) {
-                metodoActual = encontrado;
-                nombreMetodoField.setText(encontrado.getNombreMetodo());
-                JOptionPane.showMessageDialog(this, "Método encontrado. Puedes actualizar o eliminar.");
+                if (r) {
+                    JOptionPane.showMessageDialog(null,
+                            "Método de pago registrado correctamente",
+                            "Información", JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "No se logró realizar la operación",
+                            "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Método no encontrado.");
+                JOptionPane.showMessageDialog(null,
+                        "El campo Nombre Método es obligatorio",
+                        "Validación", JOptionPane.WARNING_MESSAGE);
             }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al buscar: " + ex.getMessage());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,
+                    ex.getMessage(),
+                    "ERROR", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MetodoPagoForm().setVisible(true));
     }
 }

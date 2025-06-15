@@ -1,6 +1,8 @@
 package Interface;
 
+import dominio.MetodoPago;
 import dominio.Usuario;
+import utils.CUD;
 
 import javax.swing.*;
 
@@ -68,5 +70,12 @@ public class MainForm extends JFrame {
             DestinoReadingForm destinoReadingForm = new DestinoReadingForm(this);
             destinoReadingForm.setVisible(true);
         });
+        JMenuItem itemMetodoPago = new JMenuItem("Método de pago");
+        menuMantenimiento.add(itemMetodoPago);
+        itemMetodoPago.addActionListener(e -> {
+            MetodoPagoForm form = new MetodoPagoForm(this, CUD.CREATE, new MetodoPago());
+            form.setVisible(true);
+        });
+
     }
 }
