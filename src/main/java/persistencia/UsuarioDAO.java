@@ -195,7 +195,7 @@ public class UsuarioDAO {
     }
 
 
-    public List<Usuario> obtenerUsuariosPorRol(Rol rol) throws SQLException {
+    public List<Usuario> obtenerUsuariosPorRol(Rol rol, String filtro) throws SQLException {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT id, name, email, status, rol FROM " + TABLE_NAME + " WHERE rol = ?";
 
