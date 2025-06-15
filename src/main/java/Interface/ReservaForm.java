@@ -14,30 +14,35 @@ import javax.swing.*;
 import java.util.List;
 
 public class ReservaForm extends JFrame {
-
+    private JPanel mainPanel;
     private JComboBox<CBOption> cbClientes;
     private JComboBox<CBOption> cbPaquetes;
-    private JComboBox<CBOption> cbEstado;
+    private JComboBox<CBOption> cbStatus;
+    private JButton btnGuardar;
+    private JButton btnSalir;
 
     private ClienteDAO clienteDAO;
     private UsuarioDAO usuarioDAO;
     private PaqueteDAO paqueteDAO;
-
     private Reserva reserva;
 
     public ReservaForm() {
+        setContentPane(mainPanel);
+        setTitle("Gestión de Reservas");
+        setSize(500, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
         clienteDAO = new ClienteDAO();
         usuarioDAO = new UsuarioDAO();
         paqueteDAO = new PaqueteDAO();
         reserva = new Reserva();
 
-        cbClientes = new JComboBox<>();
-        cbPaquetes = new JComboBox<>();
-        cbEstado = new JComboBox<>();
-
         initCBClientes();
         initCBPaquetes();
         initCBEstado();
+
+        setVisible(true);
     }
 
     private void initCBClientes() {
@@ -48,13 +53,14 @@ public class ReservaForm extends JFrame {
             List<Cliente> clientes = clienteDAO.searchCliente("");
             for (Cliente c : clientes) {
                 Usuario u = usuarioDAO.getById(c.getUserId());
-                String nombre = u.getNombre();
-                model.addElement(new CBOption(nombre, c.getClienteId()));
+                if (u != null) { // Validación para evitar null
+                    model.addElement(new CBOption(u.getName(), c.getClienteId()));
+                }
             }
             cbClientes.setModel(model);
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error cargando clientes: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error cargando clientes: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -63,28 +69,51 @@ public class ReservaForm extends JFrame {
             DefaultComboBoxModel<CBOption> model = new DefaultComboBoxModel<>();
             model.addElement(new CBOption("Seleccione un paquete", 0));
 
-            List<Paquete> paquetes = paqueteDAO.search("");
+            // Corrección: Se agregó un segundo argumento en la llamada a search()
+            List<Paquete> paquetes = paqueteDAO.search("", ""); // Ahora recibe dos argumentos
             for (Paquete p : paquetes) {
                 model.addElement(new CBOption(p.getNombre(), p.getPaqueteId()));
             }
             cbPaquetes.setModel(model);
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error cargando paquetes: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error cargando paquetes: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void initCBEstado() {
         try {
             DefaultComboBoxModel<CBOption> model = new DefaultComboBoxModel<>();
-            model.addElement(new CBOption("Seleccione un estado", null));
+            model.addElement(new CBOption("Seleccione un estado", "N/A")); // Evitamos null
             model.addElement(new CBOption("Pendiente", EstadoReserva.PENDIENTE));
             model.addElement(new CBOption("Confirmada", EstadoReserva.CONFIRMADA));
             model.addElement(new CBOption("Cancelada", EstadoReserva.CANCELADA));
-            cbEstado.setModel(model);
+            cbStatus.setModel(model);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error cargando estados: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error cargando estados: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private boolean getValuesControls() {
+        CBOption selectedCliente = (CBOption) cbClientes.getSelectedItem();
+        CBOption selectedPaquete = (CBOption) cbPaquetes.getSelectedItem();
+        CBOption selectedEstado = (CBOption) cbStatus.getSelectedItem();
+
+        if (selectedCliente == null || (int) selectedCliente.getValue() == 0 ||
+                selectedPaquete == null || (int) selectedPaquete.getValue() == 0 ||
+                selectedEstado == null || selectedEstado.getValue() == null) {
+            return false;
+        }
+
+        Cliente cliente = new Cliente((int) selectedCliente.getValue());
+        Paquete paquete = new Paquete((int) selectedPaquete.getValue());
+        EstadoReserva estado = (EstadoReserva) selectedEstado.getValue();
+
+        reserva.setCliente(cliente);
+        reserva.setPaquete(paquete);
+        reserva.setEstado(estado);
+
+        return true;
     }
 
     private void setValuesControls() {
@@ -109,48 +138,13 @@ public class ReservaForm extends JFrame {
         }
 
         if (reserva.getEstado() != null) {
-            for (int i = 0; i < cbEstado.getItemCount(); i++) {
-                CBOption opt = cbEstado.getItemAt(i);
+            for (int i = 0; i < cbStatus.getItemCount(); i++) {
+                CBOption opt = cbStatus.getItemAt(i);
                 if (opt.getValue() == reserva.getEstado()) {
-                    cbEstado.setSelectedIndex(i);
+                    cbStatus.setSelectedIndex(i);
                     break;
                 }
             }
         }
-    }
-
-    private boolean getValuesControls() {
-        CBOption selectedCliente = (CBOption) cbClientes.getSelectedItem();
-        CBOption selectedPaquete = (CBOption) cbPaquetes.getSelectedItem();
-        CBOption selectedEstado = (CBOption) cbEstado.getSelectedItem();
-
-        if (selectedCliente == null || (int) selectedCliente.getValue() == 0 ||
-                selectedPaquete == null || (int) selectedPaquete.getValue() == 0 ||
-                selectedEstado == null || selectedEstado.getValue() == null) {
-            return false;
-        }
-
-        Cliente cliente = new Cliente((int) selectedCliente.getValue());
-        Paquete paquete = new Paquete((int) selectedPaquete.getValue());
-        EstadoReserva estado = (EstadoReserva) selectedEstado.getValue();
-
-        reserva.setCliente(cliente);
-        reserva.setPaquete(paquete);
-        reserva.setEstado(estado);
-
-        return true;
-    }
-
-    // método para acceder al JComboBox de clientes
-    public JComboBox<CBOption> getCbClientes() {
-        return cbClientes;
-    }
-
-    public JComboBox<CBOption> getCbPaquetes() {
-        return cbPaquetes;
-    }
-
-    public JComboBox<CBOption> getCbEstado() {
-        return cbEstado;
     }
 }

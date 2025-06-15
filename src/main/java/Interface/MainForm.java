@@ -91,5 +91,11 @@ public class MainForm extends JFrame {
             ReadingPaqueteViajeForm form = new ReadingPaqueteViajeForm(this);
             form.setVisible(true);
         });
+        JMenuItem itemReservas = new JMenuItem("Reservas");
+        menuMantenimiento.add(itemReservas);
+        itemReservas.addActionListener(e -> {
+            ReservaReadingForm reservaForm = new ReservaReadingForm(this, CUD.CREATE, null);
+            reservaForm.setVisible(true);
+        });
     }
 }

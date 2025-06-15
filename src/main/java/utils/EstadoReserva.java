@@ -1,26 +1,31 @@
 package utils;
 
 public enum EstadoReserva {
-    PENDIENTE("Pendiente"),
-    CONFIRMADA("Confirmada"),
-    CANCELADA("Cancelada");
+    PENDIENTE,
+    CONFIRMADA,
+    CANCELADA;
 
-    private final String valor;
-
-    EstadoReserva(String valor) {
-        this.valor = valor;
-    }
-
+    /**
+     * Devuelve el nombre del estado como texto.
+     * Este método es útil si necesitas mostrar el valor o guardarlo en base de datos.
+     */
     public String getValor() {
-        return valor;
+        return this.name();
     }
 
-    public static EstadoReserva fromString(String texto) {
-        for (EstadoReserva estado : EstadoReserva.values()) {
-            if (estado.getValor().equalsIgnoreCase(texto)) {
-                return estado;
-            }
+    /**
+     * Convierte una cadena de texto a un valor del enum EstadoReserva.
+     * Si la cadena no es válida, retorna PENDIENTE como valor por defecto.
+     *
+     * @param estado la cadena de texto a convertir
+     * @return el valor del enum correspondiente o PENDIENTE si no coincide
+     */
+    public static EstadoReserva fromString(String estado) {
+        if (estado == null) return PENDIENTE;
+        try {
+            return EstadoReserva.valueOf(estado.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return PENDIENTE;
         }
-        throw new IllegalArgumentException("Estado no válido: " + texto);
     }
 }

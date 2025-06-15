@@ -5,7 +5,6 @@ public class Cliente {
     private int userId;
     private String telefono;
     private String direccion;
-
     public Cliente() {
     }
 
@@ -15,9 +14,11 @@ public class Cliente {
         this.telefono = telefono;
         this.direccion = direccion;
     }
+
     public Cliente(int clienteId) {
         this.clienteId = clienteId;
     }
+
     public int getUserId() {
         return userId;
     }
@@ -48,5 +49,11 @@ public class Cliente {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    // Agregado para mostrar algo representativo en la UI
+    public String getNombreCompleto() {
+        // Si en algún momento tienes nombre y apellido como atributos, reemplaza esta línea
+        return "Cliente #" + clienteId;
     }
 }
