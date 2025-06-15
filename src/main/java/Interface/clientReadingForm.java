@@ -7,6 +7,8 @@ import persistencia.UsuarioDAO;
 import utils.CUD;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
@@ -40,7 +42,24 @@ public class clientReadingForm extends JDialog {
         btnModificar.addActionListener(e -> updateSelectedCliente());
         btnEliminar.addActionListener(e -> deleteSelectedCliente());
 
-        textName.addActionListener(e -> loadTableData(textName.getText().trim()));
+        // Quitar el ActionListener que había aquí
+        // textName.addActionListener(e -> loadTableData(textName.getText().trim()));
+
+        // Añadir DocumentListener para búsqueda en tiempo real
+        textName.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                loadTableData(textName.getText().trim());
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                loadTableData(textName.getText().trim());
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                loadTableData(textName.getText().trim());
+            }
+        });
+
         loadTableData("");
     }
 

@@ -1,6 +1,8 @@
 package Interface;
 
+import dominio.Cliente;
 import dominio.Usuario;
+import persistencia.ClienteDAO;
 import persistencia.UsuarioDAO;
 import utils.CBOption;
 import utils.CUD;
@@ -20,15 +22,17 @@ public class ClientForm extends JDialog {
     private JPanel mainPanel;
 
     private UsuarioDAO usuarioDAO;
+    private ClienteDAO clienteDAO;
     private CUD cud;
     private Usuario cliente;
-    private String filtro;
+
 
     public ClientForm(Window parent, CUD cud, Usuario cliente) {
         super(parent);
         this.cud = cud;
         this.cliente = cliente;
         usuarioDAO = new UsuarioDAO();
+        clienteDAO = new ClienteDAO();
 
         setContentPane(mainPanel);
         setModal(true);
@@ -66,7 +70,8 @@ public class ClientForm extends JDialog {
             DefaultComboBoxModel<CBOption> model = new DefaultComboBoxModel<>();
             model.addElement(new CBOption("Seleccione un usuario", 0));
 
-            List<Usuario> clientes = usuarioDAO.obtenerUsuariosPorRol(Rol.Cliente, filtro);
+            List<Usuario> clientes = usuarioDAO.obtenerUsuariosPorRol(Rol.Cliente, "");
+
             for (Usuario u : clientes) {
                 model.addElement(new CBOption(u.getName(), u.getId()));
             }
@@ -128,19 +133,34 @@ public class ClientForm extends JDialog {
 
                 switch (cud) {
                     case CREATE:
-                        // Aquí deberías invocar usuarioDAO.crearCliente(cliente)
-                        System.out.println("Guardando nuevo cliente: " + cliente);
-                        r = true;
+                        // Verificar si ya existe cliente con ese userId
+                        if (clienteDAO.getByUserId(cliente.getId()) != null) {
+                            JOptionPane.showMessageDialog(null, "Este usuario ya está registrado como cliente.", "Validación", JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                        Cliente nuevo = new Cliente();
+                        nuevo.setUserId(cliente.getId());
+                        nuevo.setTelefono(cliente.getTelefono());
+                        nuevo.setDireccion(cliente.getDescripcion()); // usando descripcion como dirección
+
+                        Cliente creado = clienteDAO.create(nuevo);
+                        r = creado != null;
                         break;
+
                     case UPDATE:
-                        // Aquí deberías invocar usuarioDAO.actualizarCliente(cliente)
-                        System.out.println("Actualizando cliente: " + cliente);
-                        r = true;
+                        Cliente existente = clienteDAO.getByUserId(cliente.getId());
+                        if (existente != null) {
+                            existente.setTelefono(cliente.getTelefono());
+                            existente.setDireccion(cliente.getDescripcion());
+                            r = clienteDAO.update(existente);
+                        }
                         break;
+
                     case DELETE:
-                        // Aquí deberías invocar usuarioDAO.eliminarCliente(cliente.getId())
-                        System.out.println("Eliminando cliente: " + cliente.getId());
-                        r = true;
+                        Cliente paraEliminar = clienteDAO.getByUserId(cliente.getId());
+                        if (paraEliminar != null) {
+                            r = clienteDAO.delete(paraEliminar.getClienteId());
+                        }
                         break;
                 }
 
