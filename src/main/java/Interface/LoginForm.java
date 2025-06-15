@@ -2,6 +2,8 @@ package Interface;
 
 import dominio.Usuario;
 import persistencia.UsuarioDAO;
+import utils.Rol;
+
 import javax.swing.*;
 import java.awt.event.WindowAdapter; // Importa la clase WindowAdapter desde el paquete java.awt.event. WindowAdapter es una clase abstracta que implementa la interfaz WindowListener y proporciona implementaciones vacías para sus métodos. Se utiliza para extenderla y solo sobrescribir los métodos de los eventos de ventana que nos interesan.
 import java.awt.event.WindowEvent;
@@ -48,10 +50,23 @@ public class LoginForm extends JDialog {
             // 1. 'userAut' no es null (se encontró un usuario).
             // 2. El ID del usuario autenticado es mayor que 0 (implica que es un usuario válido en la base de datos).
             // 3. El correo electrónico del usuario autenticado coincide con el correo electrónico ingresado.
-            if(userAut != null && userAut.getId() > 0 && userAut.getEmail().equals((user.getEmail()))){
-                this.mainForm.setUserAutenticate(userAut); // Si la autenticación es exitosa, establece el usuario autenticado en el formulario principal ('mainForm'). Esto permite que el formulario principal acceda a la información del usuario logueado.
-                this.dispose(); // Cierra la ventana de inicio de sesión actual.
+            if(userAut != null && userAut.getId() > 0 && userAut.getEmail().equals(user.getEmail())) {
+                this.mainForm.setUserAutenticate(userAut);
+                this.dispose(); // cerrar LoginForm
+
+                // Verificar si el rol es Administrador usando el enum
+                if (userAut.getRol() == Rol.Administrador) {
+                    PanelAdminForm adminForm = new PanelAdminForm();
+                    adminForm.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Tu rol no tiene acceso al panel de administrador.",
+                            "Acceso Denegado",
+                            JOptionPane.WARNING_MESSAGE);
+                }
             }
+
+
             else{
                 // Si la autenticación falla, muestra un mensaje de diálogo de advertencia.
                 JOptionPane.showMessageDialog(null,

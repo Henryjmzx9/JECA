@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FormularioDestinoGUI extends JFrame {
-    public JPanel contentPane;
+    public JPanel mainPanel;
     public JTextField nombreField;
     public JTextField paisField;
     public JTextArea descripcionArea;
@@ -28,7 +28,7 @@ public class FormularioDestinoGUI extends JFrame {
 
     public FormularioDestinoGUI(MainForm mainForm, CUD create, Destino destino) {
         $$$setupUI$$$();  // genera el diseño del .form
-        setContentPane(contentPane);
+        setContentPane(mainPanel);
         setTitle("Gestión de Destinos");
         setSize(600, 500);
         setLocationRelativeTo(null);
