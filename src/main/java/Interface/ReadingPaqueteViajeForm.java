@@ -1,9 +1,9 @@
 package Interface;
 
 import dominio.Paquete;
+import persistencia.DestinoDAO;
 import persistencia.PaqueteDAO;
 import utils.CUD;
-import utils.CBOption;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -20,17 +20,19 @@ public class ReadingPaqueteViajeForm extends JDialog {
     private JButton btnDelete;
 
     private PaqueteDAO paqueteDAO;
+    private DestinoDAO destinoDAO;
     private DefaultTableModel tableModel;
 
     public ReadingPaqueteViajeForm(Window parent) {
         super(parent, "Gestión de Paquetes de Viaje", ModalityType.APPLICATION_MODAL);
 
         paqueteDAO = new PaqueteDAO();
+        destinoDAO = new DestinoDAO();  // ✅ Instancia de DestinoDAO
 
         initComponents();
 
         setContentPane(mainPanel);
-        setSize(800, 400);
+        setSize(900, 450);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -46,7 +48,6 @@ public class ReadingPaqueteViajeForm extends JDialog {
     private void initComponents() {
         mainPanel = new JPanel(new BorderLayout(10, 10));
 
-        // Panel superior con filtro y botón crear
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Buscar:"));
         textName = new JTextField(20);
@@ -56,13 +57,12 @@ public class ReadingPaqueteViajeForm extends JDialog {
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
-        // Tabla con paquetes
         tableModel = new DefaultTableModel(
-                new String[]{"ID", "Nombre", "Descripción", "Precio", "Duración (días)", "Fecha Inicio", "Fecha Fin", "Destino ID"},
+                new String[]{"ID", "Nombre", "Descripción", "Precio", "Duración (días)", "Fecha Inicio", "Fecha Fin", "Destino"},
                 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Tabla no editable
+                return false;
             }
         };
         tablepaquetes = new JTable(tableModel);
@@ -70,7 +70,6 @@ public class ReadingPaqueteViajeForm extends JDialog {
         JScrollPane scrollPane = new JScrollPane(tablepaquetes);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel inferior con botones actualizar y eliminar
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnUpdate = new JButton("Actualizar");
         btnDelete = new JButton("Eliminar");
@@ -85,6 +84,11 @@ public class ReadingPaqueteViajeForm extends JDialog {
             ArrayList<Paquete> paquetes = paqueteDAO.searchPaquete(filtro);
             tableModel.setRowCount(0);
             for (Paquete p : paquetes) {
+                String nombreDestino = "Sin destino";
+                if (p.getDestinoId() != 0) {
+                    nombreDestino = destinoDAO.getNombreById(p.getDestinoId());
+                }
+
                 tableModel.addRow(new Object[]{
                         p.getPaqueteId(),
                         p.getNombre(),
@@ -93,7 +97,7 @@ public class ReadingPaqueteViajeForm extends JDialog {
                         p.getDuracionDias(),
                         p.getFechaInicio(),
                         p.getFechaFin(),
-                        p.getDestinoId()
+                        nombreDestino
                 });
             }
         } catch (SQLException ex) {
@@ -106,7 +110,6 @@ public class ReadingPaqueteViajeForm extends JDialog {
     private void openPaqueteForm(CUD cud, Paquete paquete) {
         PaqueteViajeForm form = new PaqueteViajeForm(this, cud, paquete != null ? paquete : new Paquete());
         form.setVisible(true);
-        // Recargar tabla al cerrar el form
         loadTableData(textName.getText().trim());
     }
 

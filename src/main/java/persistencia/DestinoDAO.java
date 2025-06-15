@@ -4,7 +4,7 @@ import dominio.Destino;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class  DestinoDAO {
+public class DestinoDAO {
     private final ConnectionManager conn;
     private static final String TABLE_NAME = "Destinos";
 
@@ -84,6 +84,22 @@ public class  DestinoDAO {
         return destino;
     }
 
+    // ✅ Método para obtener el nombre de un destino por su ID
+    public String getNombreById(int id) throws SQLException {
+        String nombre = "Sin destino";
+        String sql = "SELECT nombre FROM " + TABLE_NAME + " WHERE destinoId = ?";
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    nombre = rs.getString("nombre");
+                }
+            }
+        }
+        return nombre;
+    }
+
     public ArrayList<Destino> search(String nombre) throws SQLException {
         ArrayList<Destino> destinos = new ArrayList<>();
         String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME + " WHERE nombre LIKE ?";
@@ -105,7 +121,8 @@ public class  DestinoDAO {
         }
         return destinos;
     }
-public ArrayList<Destino> getAll() throws SQLException {
+
+    public ArrayList<Destino> getAll() throws SQLException {
         ArrayList<Destino> destinos = new ArrayList<>();
         String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME;
         try (Connection connection = conn.connect();
@@ -124,5 +141,4 @@ public ArrayList<Destino> getAll() throws SQLException {
         }
         return destinos;
     }
-
 }
