@@ -22,6 +22,7 @@ public class ClientForm extends JDialog {
     private UsuarioDAO usuarioDAO;
     private CUD cud;
     private Usuario cliente;
+    private String filtro;
 
     public ClientForm(Window parent, CUD cud, Usuario cliente) {
         super(parent);
@@ -65,7 +66,7 @@ public class ClientForm extends JDialog {
             DefaultComboBoxModel<CBOption> model = new DefaultComboBoxModel<>();
             model.addElement(new CBOption("Seleccione un usuario", 0));
 
-            List<Usuario> clientes = usuarioDAO.obtenerUsuariosPorRol(Rol.Cliente);
+            List<Usuario> clientes = usuarioDAO.obtenerUsuariosPorRol(Rol.Cliente, filtro);
             for (Usuario u : clientes) {
                 model.addElement(new CBOption(u.getName(), u.getId()));
             }
