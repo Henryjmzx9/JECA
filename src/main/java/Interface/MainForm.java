@@ -73,8 +73,8 @@ public class MainForm extends JFrame {
         JMenuItem itemMetodoPago = new JMenuItem("Método de pago");
         menuMantenimiento.add(itemMetodoPago);
         itemMetodoPago.addActionListener(e -> {
-            MetodoPagoForm form = new MetodoPagoForm(this, CUD.CREATE, new MetodoPago());
-            form.setVisible(true);
+            MetodoPagoReadingForm metodoPagoReadingForm = new MetodoPagoReadingForm(this);
+            metodoPagoReadingForm.setVisible(true);
         });
 
     }
