@@ -46,7 +46,8 @@ public class DestinoReadingForm extends JDialog {
         });
 
         btnCreate.addActionListener(s -> {
-            FormularioDestinoGUI destinoForm = new FormularioDestinoGUI(this.mainForm, CUD.CREATE, new Destino());
+            FormularioDestinoGUI destinoForm = new FormularioDestinoGUI(this, CUD.CREATE, new Destino());
+            destinoForm.setModal(true);
             destinoForm.setVisible(true);
             DefaultTableModel emptyModel = new DefaultTableModel();
             tableDestinos.setModel(emptyModel);
@@ -55,7 +56,8 @@ public class DestinoReadingForm extends JDialog {
         btnUpdate.addActionListener(s -> {
             Destino destino = getDestinoFromTableRow();
             if (destino != null) {
-                FormularioDestinoGUI destinoForm = new FormularioDestinoGUI(this.mainForm, CUD.UPDATE, destino);
+                FormularioDestinoGUI destinoForm = new FormularioDestinoGUI(this, CUD.UPDATE, destino);
+                destinoForm.setModal(true);
                 destinoForm.setVisible(true);
                 DefaultTableModel emptyModel = new DefaultTableModel();
                 tableDestinos.setModel(emptyModel);
@@ -65,7 +67,8 @@ public class DestinoReadingForm extends JDialog {
         btnDelete.addActionListener(s -> {
             Destino destino = getDestinoFromTableRow();
             if (destino != null) {
-                FormularioDestinoGUI destinoForm = new FormularioDestinoGUI(this.mainForm, CUD.DELETE, destino);
+                FormularioDestinoGUI destinoForm = new FormularioDestinoGUI(this, CUD.DELETE, destino);
+                destinoForm.setModal(true);
                 destinoForm.setVisible(true);
                 DefaultTableModel emptyModel = new DefaultTableModel();
                 tableDestinos.setModel(emptyModel);

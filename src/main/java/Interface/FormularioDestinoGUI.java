@@ -14,7 +14,7 @@ import java.nio.file.Files;
 import java.sql.SQLException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class FormularioDestinoGUI extends JFrame {
+public class FormularioDestinoGUI extends JDialog {
     public JPanel mainPanel;
     public JTextField nombreField;
     public JTextField paisField;
@@ -26,19 +26,22 @@ public class FormularioDestinoGUI extends JFrame {
 
     private String imagenRuta;
 
-    public FormularioDestinoGUI(MainForm mainForm, CUD create, Destino destino) {
-        $$$setupUI$$$();  // genera el diseño del .form
+    public FormularioDestinoGUI(Window owner, CUD cud, Destino destino) {
+        super(owner, "Formulario Destino", ModalityType.APPLICATION_MODAL);
+
+        $$$setupUI$$$(); // Esto lo genera automáticamente IntelliJ IDEA
         setContentPane(mainPanel);
-        setTitle("Gestión de Destinos");
         setSize(600, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setLocationRelativeTo(owner);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         configurarEventos();
+
+        // Aquí puedes usar el objeto destino para cargar datos, si es necesario
+        // Ejemplo: si destino no es null, carga los datos en los campos
     }
 
     private void configurarEventos() {
-        // Confirmación de cierre
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 int confirm = JOptionPane.showConfirmDialog(
@@ -53,16 +56,13 @@ public class FormularioDestinoGUI extends JFrame {
             }
         });
 
-        // Seleccionar imagen
         seleccionarImagenButton.addActionListener(e -> seleccionarImagen());
 
-        // Guardar destino
         guardarButton.addActionListener(e -> guardarDestino());
 
-        // Cargar destino (por implementar)
-        cargarButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(FormularioDestinoGUI.this, "Cargar destino (por implementar)");
-        });
+        cargarButton.addActionListener(e ->
+                JOptionPane.showMessageDialog(FormularioDestinoGUI.this, "Cargar destino (por implementar)")
+        );
     }
 
     private void seleccionarImagen() {
@@ -107,11 +107,8 @@ public class FormularioDestinoGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "No se pudo guardar el destino.");
             }
 
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al leer la imagen: " + ex.getMessage());
-            ex.printStackTrace();
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al guardar en la base de datos: " + ex.getMessage());
+        } catch (IOException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -124,15 +121,8 @@ public class FormularioDestinoGUI extends JFrame {
         imagenLabel.setText("Imagen no seleccionada");
         imagenRuta = null;
     }
-/*
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            FormularioDestinoGUI ventana = new FormularioDestinoGUI(this.mainForm, CUD.CREATE, new Destino());
-            ventana.setVisible(true);
-        });
-    }
-*/
+
     private void $$$setupUI$$$() {
-        // Este método lo deja IntelliJ tal cual al compilar el .form
+        // Método generado automáticamente por IntelliJ IDEA para el diseño del formulario
     }
 }
