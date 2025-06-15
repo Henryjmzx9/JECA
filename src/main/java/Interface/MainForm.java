@@ -62,6 +62,15 @@ public class MainForm extends JFrame {
             UserReadingForm userReadingForm = new UserReadingForm(this);
             userReadingForm.setVisible(true);
         });
+        // Opción: Clientes
+        JMenuItem itemClients = new JMenuItem("Clientes");
+        menuMantenimiento.add(itemClients);
+        itemClients.addActionListener(e -> {
+            // Asumiendo que ClientForm extiende JDialog y recibe el padre
+            ClientForm clientForm = new ClientForm(this, CUD.CREATE, null); // si tu constructor es así, ajusta
+            clientForm.setVisible(true);
+        });
+
 
         // Opción: Destinos
         JMenuItem itemDestinos = new JMenuItem("Destinos");
