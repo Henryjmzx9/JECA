@@ -9,6 +9,7 @@ import utils.CUD;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.List;
 
 public class PaqueteViajeForm extends JDialog {
@@ -123,6 +124,10 @@ public class PaqueteViajeForm extends JDialog {
         this.en.setDestinoId(destinoId);
         this.en.setDescripcion(textArea1.getText());
 
+        // ✅ Asignar fechas por defecto según la duración
+        this.en.setFechaInicio(LocalDate.now());
+        this.en.setFechaFin(LocalDate.now().plusDays(this.en.getDuracionDias()));
+
         return true;
     }
 
@@ -133,7 +138,7 @@ public class PaqueteViajeForm extends JDialog {
                 switch (this.cud) {
                     case CREATE:
                         Paquete p = paqueteDAO.create(this.en);
-                        if (p.getPaqueteId() > 0) r = true;
+                        if (p != null && p.getPaqueteId() > 0) r = true;
                         break;
                     case UPDATE:
                         r = paqueteDAO.update(this.en);
