@@ -15,6 +15,22 @@ public class LoginForm extends JDialog {
     private JButton btnSalir;
     private JPasswordField txtPassword;
 
+    public LoginForm() {
+        initComponents(); // llamado generado por el GUI Designer
+
+        // Imagen de fondo (esto es lo que me diste, ya colocado correctamente)
+        int ancho = 600;
+        int alto = 400;
+        ImageIcon fondo = new ImageIcon(getClass().getResource("C:\\Users\\MINEDUCYT\\IdeaProjects\\JECA\\src\\main\\java\\utils\\img.png"));
+        JLabel fondoLabel = new JLabel(fondo);
+        fondoLabel.setBounds(0, 0, ancho, alto);
+        getContentPane().add(fondoLabel);
+    }
+
+    private void initComponents() {
+        // Aquí va el código generado por IntelliJ Swing UI Designer (.form)
+    }
+
 
     private UsuarioDAO userDAO; // Declaración de una variable de instancia llamada 'userDAO' de tipo UserDAO. Esta variable se utilizará para interactuar con la capa de acceso a datos de los usuarios (por ejemplo, para autenticar usuarios).
     private MainForm mainForm;
