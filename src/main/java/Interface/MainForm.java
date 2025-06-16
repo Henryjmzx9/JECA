@@ -8,6 +8,7 @@ import javax.swing.*;
 public class MainForm extends JFrame {
 
     private Usuario userAutenticate;
+    private JPanel panel1;
 
     public Usuario getUserAutenticate() {
         return userAutenticate;
