@@ -23,15 +23,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
-      <component id="3f6b0" class="javax.swing.JTextField" binding="textField1" default-binding="true">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
-      <component id="9384d" class="javax.swing.JButton" binding="modificarButton" default-binding="true">
+      <component id="9384d" class="javax.swing.JButton" binding="btnModificar">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -46,13 +38,13 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="c61c2" class="javax.swing.JTable" binding="table1" default-binding="true">
+          <component id="c61c2" class="javax.swing.JTable" binding="tablePago">
             <constraints/>
             <properties/>
           </component>
         </children>
       </scrollpane>
-      <component id="d6654" class="javax.swing.JButton" binding="crearButton" default-binding="true">
+      <component id="d6654" class="javax.swing.JButton" binding="btnCrear">
         <constraints>
           <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -60,13 +52,19 @@
           <text value="Crear"/>
         </properties>
       </component>
-      <component id="e5e71" class="javax.swing.JButton" binding="eliminarButton" default-binding="true">
+      <component id="e5e71" class="javax.swing.JButton" binding="btnEliminar">
         <constraints>
           <grid row="2" column="3" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Eliminar"/>
         </properties>
+      </component>
+      <component id="b9dff" class="javax.swing.JComboBox" binding="cbId">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
       </component>
     </children>
   </grid>

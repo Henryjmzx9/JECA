@@ -97,5 +97,11 @@ public class MainForm extends JFrame {
             ReservaReadingForm reservaForm = new ReservaReadingForm(this);
             reservaForm.setVisible(true);
         });
+        JMenuItem itemPagos = new JMenuItem("Pagos");
+        menuMantenimiento.add(itemPagos);
+        itemPagos.addActionListener(e -> {
+            PagoReadingForm pagoForm = new PagoReadingForm(this);
+            pagoForm.setVisible(true);
+        });
     }
 }
