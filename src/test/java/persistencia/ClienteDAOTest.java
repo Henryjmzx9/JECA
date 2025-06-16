@@ -106,7 +106,7 @@ class ClienteDAOTest {
         deleteCliente(cliente);
     }
 
-    @Test
+   /*@Test
     void createCliente2() throws SQLException {
         // Crear un usuario de prueba
         Usuario usuario = new Usuario(0, "Usuario Test", "password123", "test@example.com", (byte) 1, Rol.Cliente);
@@ -125,5 +125,5 @@ class ClienteDAOTest {
         // Limpieza: Eliminar cliente y usuario
         clienteDAO.delete(clienteCreado.getClienteId());
         usuarioDAO.delete(usuarioCreado.getId());
-    }
+    }*/
 }

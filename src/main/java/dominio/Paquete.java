@@ -28,6 +28,10 @@ public class Paquete {
     public Paquete(int paqueteId) {
         this.paqueteId = paqueteId;
     }
+
+    public Paquete(int paqueteId, String paqueteNombre) {
+    }
+
     public int getPaqueteId() {
         return paqueteId;
     }

@@ -125,4 +125,7 @@ public class ConnectionManager {
         // Retorna la instancia existente (o la recién creada).
         return instance;
     }
+    public static Connection getConnection() throws SQLException {
+        return getInstance().connect();
+    }
 }

@@ -3,12 +3,14 @@ package persistencia;
 import dominio.Usuario;
 import utils.PasswordHasher;
 import utils.Rol;
+
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioDAO {
     private final ConnectionManager conn;
-    private static final String TABLE_NAME = "Users"; // <-- tabla corregida aquí
+    private static final String TABLE_NAME = "Users";
 
     public UsuarioDAO() {
         conn = ConnectionManager.getInstance();
@@ -132,7 +134,7 @@ public class UsuarioDAO {
 
     public ArrayList<Usuario> getAll() throws SQLException {
         ArrayList<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT id, name, email, status, rol FROM " + TABLE_NAME ;
+        String sql = "SELECT id, name, email, status, rol FROM " + TABLE_NAME;
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             try (ResultSet rs = ps.executeQuery()) {
@@ -149,6 +151,7 @@ public class UsuarioDAO {
         }
         return usuarios;
     }
+
     public static int getIdByEmail(String email) throws SQLException {
         int userId = -1;
         String sql = "SELECT id FROM Users WHERE email = ?";
@@ -163,12 +166,13 @@ public class UsuarioDAO {
         }
         return userId;
     }
+
     public Usuario authenticate(String email, String plainPassword) throws SQLException {
         Usuario usuario = null;
         String sql = "SELECT id, name, passwordHash, email, status, rol FROM " + TABLE_NAME + " WHERE email = ?";
+
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -187,7 +191,32 @@ public class UsuarioDAO {
                 }
             }
         }
-
         return usuario;
+    }
+
+
+    public List<Usuario> obtenerUsuariosPorRol(Rol rol, String filtro) throws SQLException {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT id, name, email, status, rol FROM " + TABLE_NAME + " WHERE rol = ?";
+
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, rol.name());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario();
+                    usuario.setId(rs.getInt("id"));
+                    usuario.setName(rs.getString("name"));
+                    usuario.setEmail(rs.getString("email"));
+                    usuario.setStatus(rs.getByte("status"));
+                    usuario.setRol(Rol.valueOf(rs.getString("rol")));
+                    usuarios.add(usuario);
+                }
+            }
+        }
+
+        return usuarios;
     }
 }

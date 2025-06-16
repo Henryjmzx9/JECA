@@ -1,4 +1,5 @@
 package dominio;
+
 import utils.EstadoReserva;
 import java.time.LocalDate;
 
@@ -19,6 +20,7 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
         this.estado = estado;
     }
+
     public int getReservaId() {
         return reservaId;
     }
@@ -58,5 +60,30 @@ public class Reserva {
     public void setEstado(EstadoReserva estado) {
         this.estado = estado;
     }
-}
 
+// Métodos agregados para compatibilidad con la UI
+
+    public int getClienteId() {
+        return cliente != null ? cliente.getClienteId() : 0;
+    }
+
+    public void setClienteId(int clienteId) {
+        this.cliente = new Cliente(clienteId);
+    }
+
+    public int getPaqueteId() {
+        return paquete != null ? paquete.getPaqueteId() : 0;
+    }
+
+    public void setPaqueteId(int paqueteId) {
+        this.paquete = new Paquete(paqueteId);
+    }
+
+    public void setEstado(String estado) {
+        try {
+            this.estado = EstadoReserva.valueOf(estado.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            this.estado = null;
+        }
+    }
+}

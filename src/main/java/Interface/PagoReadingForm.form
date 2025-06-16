@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Interface.PagoReadingForm">
+  <grid id="27dc6" layout-manager="GridLayoutManager" row-count="3" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="20" left="20" bottom="20" right="20"/>
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties>
+      <background color="-9014152"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="b3f92" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Nombre/Metodo"/>
+        </properties>
+      </component>
+      <vspacer id="d5fa8">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
+      <component id="9384d" class="javax.swing.JButton" binding="btnModificar">
+        <constraints>
+          <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-13229954"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-1118496"/>
+          <text value="Modificar"/>
+        </properties>
+      </component>
+      <scrollpane id="f4926">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="c61c2" class="javax.swing.JTable" binding="tablePago">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <component id="d6654" class="javax.swing.JButton" binding="btnCrear">
+        <constraints>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-11827119"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-1118496"/>
+          <text value="Crear"/>
+        </properties>
+      </component>
+      <component id="e5e71" class="javax.swing.JButton" binding="btnEliminar">
+        <constraints>
+          <grid row="2" column="3" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-5034459"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-1118496"/>
+          <text value="Eliminar"/>
+        </properties>
+      </component>
+      <component id="b9dff" class="javax.swing.JComboBox" binding="cbId">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+    </children>
+  </grid>
+</form>

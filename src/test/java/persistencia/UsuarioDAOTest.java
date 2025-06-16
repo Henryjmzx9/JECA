@@ -75,6 +75,7 @@ class UsuarioDAOTest {
         authenticate(usuario, newPassword);
     }
 
+
     private void delete(Usuario usuario) throws SQLException {
         boolean res = usuarioDAO.delete(usuario.getId());
         assertTrue(res, "La eliminación debe ser exitosa.");

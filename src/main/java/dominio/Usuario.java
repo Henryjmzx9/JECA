@@ -9,6 +9,8 @@ public class  Usuario {
     private String email;
     private byte status;
     private Rol rol;
+    private String telefono;
+    private String descripcion;
 
     public Usuario() {
     }
@@ -21,7 +23,26 @@ public class  Usuario {
         this.status = status;
         this.rol = rol;
     }
+    public String getTelefono() {
+        return telefono;
+    }
 
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+    // Para mostrar en JComboBox
+    @Override
+    public String toString() {
+        return name;
+    }
     public int getId() {
         return id;
     }

@@ -74,7 +74,7 @@ class PagoDAOTest {
     }
 
     private void searchByReservaId() throws SQLException {
-        ArrayList<Pago> pagos = pagoDAO.searchByReservaId(6);
+        ArrayList<Pago> pagos = pagoDAO.getByReservaId(6);
         assertNotNull(pagos, "La búsqueda por reservaId no debe ser nula.");
         assertFalse(pagos.isEmpty(), "Debe haber pagos para la reservaId=6.");
     }

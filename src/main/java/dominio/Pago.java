@@ -1,4 +1,5 @@
 package dominio;
+
 import java.util.Date;
 
 public class Pago {
@@ -8,8 +9,13 @@ public class Pago {
     private int metodoPagoId;
     private Date fechaPago;
 
+    // NUEVA propiedad
+    private MetodoPago metodoPago;
+    private Reserva reserva;
+
     public Pago() {
     }
+
     public Pago(int pagoId, int reservaId, double monto, int metodoPagoId, Date fechaPago) {
         this.pagoId = pagoId;
         this.reservaId = reservaId;
@@ -56,5 +62,23 @@ public class Pago {
 
     public void setFechaPago(Date fechaPago) {
         this.fechaPago = fechaPago;
+    }
+
+    // Getter y Setter de MetodoPago
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    // Getter y Setter de Reserva
+    public Reserva getReserva() {
+        return reserva;
+    }
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
     }
 }

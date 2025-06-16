@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Interface.UserReadingForm">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Interface.ReadingPaqueteViajeForm">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="20" left="20" bottom="20" right="20"/>
     <constraints>
-      <xy x="20" y="20" width="525" height="400"/>
+      <xy x="20" y="20" width="500" height="400"/>
     </constraints>
     <properties>
       <background color="-9014152"/>
     </properties>
     <border type="none"/>
     <children>
-      <component id="4f376" class="javax.swing.JLabel">
+      <component id="6649a" class="javax.swing.JLabel">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <font name="DejaVu Sans Mono" style="0"/>
+          <font name="Courier New"/>
           <text value="Nombre"/>
         </properties>
       </component>
-      <vspacer id="efee2">
+      <vspacer id="fa50a">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
-      <component id="3ef94" class="javax.swing.JButton" binding="btnCreate">
+      <component id="953e6" class="javax.swing.JTextField" binding="textName">
         <constraints>
-          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <background color="-11827119"/>
-          <font name="Courier New" style="0"/>
-          <foreground color="-1118496"/>
-          <text value="Ir a crear"/>
-        </properties>
-      </component>
-      <component id="eee26" class="javax.swing.JTextField" binding="txtName">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
         <properties/>
       </component>
-      <scrollpane id="649c3">
+      <component id="8603b" class="javax.swing.JButton" binding="btnCreate">
         <constraints>
-          <grid row="1" column="1" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-11827119"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-1118496"/>
+          <text value="Crear"/>
+        </properties>
+      </component>
+      <scrollpane id="1e1e5">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="b5ac7" class="javax.swing.JTable" binding="tableUsers">
+          <component id="98d5f" class="javax.swing.JTable" binding="tablepaquetes">
             <constraints/>
             <properties/>
           </component>
         </children>
       </scrollpane>
-      <component id="3e96a" class="javax.swing.JButton" binding="btnUpdate">
+      <component id="fe7fb" class="javax.swing.JButton" binding="btnUpdate">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -67,7 +67,7 @@
           <text value="Ir a modificar"/>
         </properties>
       </component>
-      <component id="59ef6" class="javax.swing.JButton" binding="btnDelete">
+      <component id="c4a88" class="javax.swing.JButton" binding="btnDelete">
         <constraints>
           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -75,7 +75,7 @@
           <background color="-5034459"/>
           <font name="Courier New" style="0"/>
           <foreground color="-1118496"/>
-          <text value="Ir a elimimnar"/>
+          <text value="Ir a eliminar"/>
         </properties>
       </component>
     </children>

@@ -84,6 +84,22 @@ public class DestinoDAO {
         return destino;
     }
 
+    // ✅ Método para obtener el nombre de un destino por su ID
+    public String getNombreById(int id) throws SQLException {
+        String nombre = "Sin destino";
+        String sql = "SELECT nombre FROM " + TABLE_NAME + " WHERE destinoId = ?";
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    nombre = rs.getString("nombre");
+                }
+            }
+        }
+        return nombre;
+    }
+
     public ArrayList<Destino> search(String nombre) throws SQLException {
         ArrayList<Destino> destinos = new ArrayList<>();
         String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME + " WHERE nombre LIKE ?";
@@ -105,7 +121,8 @@ public class DestinoDAO {
         }
         return destinos;
     }
-public ArrayList<Destino> getAll() throws SQLException {
+
+    public ArrayList<Destino> getAll() throws SQLException {
         ArrayList<Destino> destinos = new ArrayList<>();
         String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME;
         try (Connection connection = conn.connect();
@@ -123,27 +140,5 @@ public ArrayList<Destino> getAll() throws SQLException {
             }
         }
         return destinos;
-    }
-    // Método authenticate: verifica si existe un destino por nombre y país
-    public Destino authenticate(String nombre, String pais) throws SQLException {
-        Destino destino = null;
-        String sql = "SELECT destinoId, nombre, pais, descripcion, imagen FROM " + TABLE_NAME + " WHERE nombre = ? AND pais = ?";
-        try (Connection connection = conn.connect();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-
-            ps.setString(1, nombre);
-            ps.setString(2, pais);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    destino = new Destino();
-                    destino.setDestinoId(rs.getInt("destinoId"));
-                    destino.setNombre(rs.getString("nombre"));
-                    destino.setPais(rs.getString("pais"));
-                    destino.setDescripcion(rs.getString("descripcion"));
-                    destino.setImagen(rs.getBytes("imagen"));
-                }
-            }
-        }
-        return destino;
     }
 }

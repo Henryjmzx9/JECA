@@ -5,19 +5,28 @@ public class Cliente {
     private int userId;
     private String telefono;
     private String direccion;
+    private String nombre;  // <-- Lo agregamos
 
     public Cliente() {
     }
 
-    public Cliente(int clienteId, int userId, String telefono, String direccion) {
+    public Cliente(int clienteId, int userId, String telefono, String direccion, String nombre) {
         this.clienteId = clienteId;
         this.userId = userId;
         this.telefono = telefono;
         this.direccion = direccion;
+        this.nombre = nombre;
     }
+
     public Cliente(int clienteId) {
         this.clienteId = clienteId;
     }
+
+    public Cliente(int clienteId, String nombre) {
+        this.clienteId = clienteId;
+        this.nombre = nombre;
+    }
+
     public int getUserId() {
         return userId;
     }
@@ -48,5 +57,18 @@ public class Cliente {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    // Este método lo podés dejar o quitar según cómo prefieras mostrar en tablas
+    public String getNombreCompleto() {
+        return nombre != null ? nombre : "Cliente #" + clienteId;
     }
 }
