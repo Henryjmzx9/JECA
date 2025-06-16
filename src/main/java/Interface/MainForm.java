@@ -94,7 +94,7 @@ public class MainForm extends JFrame {
         JMenuItem itemReservas = new JMenuItem("Reservas");
         menuMantenimiento.add(itemReservas);
         itemReservas.addActionListener(e -> {
-            ReservaReadingForm reservaForm = new ReservaReadingForm(this, CUD.CREATE, null);
+            ReservaReadingForm reservaForm = new ReservaReadingForm(this);
             reservaForm.setVisible(true);
         });
     }

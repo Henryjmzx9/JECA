@@ -92,10 +92,21 @@ public class ReservaDAO {
         }
         return reserva;
     }
-
     public ArrayList<Reserva> getAll() throws SQLException {
-        ArrayList<Reserva> reservas = new ArrayList<>();
-        String sql = "SELECT reservaId, clienteId, paqueteId, fechaReserva, estado FROM " + TABLE_NAME;
+        ArrayList<Reserva> lista = new ArrayList<>();
+
+        String sql = "SELECT r.reservaId, " +
+                "       u.name AS clienteNombre, " +
+                "       c.clienteId, " +
+                "       p.nombre AS paqueteNombre, " +
+                "       p.paqueteId, " +
+                "       r.estado, " +
+                "       r.fechaReserva " +
+                "FROM Reservas r " +
+                "JOIN Clientes c ON r.clienteId = c.clienteId " +
+                "JOIN Users u ON c.userId = u.id " +
+                "JOIN Paquetes p ON r.paqueteId = p.paqueteId";
+
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -103,44 +114,70 @@ public class ReservaDAO {
             while (rs.next()) {
                 Reserva reserva = new Reserva();
                 reserva.setReservaId(rs.getInt("reservaId"));
-                reserva.setCliente(new Cliente(rs.getInt("clienteId")));
-                reserva.setPaquete(new Paquete(rs.getInt("paqueteId")));
+
+                Cliente cliente = new Cliente();
+                cliente.setClienteId(rs.getInt("clienteId"));
+                cliente.setNombre(rs.getString("clienteNombre"));
+                reserva.setCliente(cliente);
+
+                Paquete paquete = new Paquete();
+                paquete.setPaqueteId(rs.getInt("paqueteId"));
+                paquete.setNombre(rs.getString("paqueteNombre"));
+                reserva.setPaquete(paquete);
+
+                reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado").toUpperCase()));
                 reserva.setFechaReserva(rs.getDate("fechaReserva").toLocalDate());
-                reserva.setEstado(EstadoReserva.fromString(rs.getString("estado")));
-                reservas.add(reserva);
+
+                lista.add(reserva);
             }
         }
-        return reservas;
+
+        return lista;
     }
 
-    public ArrayList<Reserva> search(String keyword) throws SQLException {
-        ArrayList<Reserva> resultados = new ArrayList<>();
-        String sql = """
-            SELECT r.reservaId, r.clienteId, r.paqueteId, r.fechaReserva, r.estado
-            FROM Reservas r
-            JOIN Clientes c ON r.clienteId = c.clienteId
-            JOIN Paquetes p ON r.paqueteId = p.paqueteId
-            WHERE c.direccion LIKE ? OR p.nombre LIKE ?
-        """;
+    public ArrayList<Reserva> searchByEstado(EstadoReserva estado) throws SQLException {
+        ArrayList<Reserva> lista = new ArrayList<>();
+
+        String sql = "SELECT r.reservaId, " +
+                "       u.name AS clienteNombre, " +
+                "       c.clienteId, " +
+                "       p.nombre AS paqueteNombre, " +
+                "       p.paqueteId, " +
+                "       r.estado, " +
+                "       r.fechaReserva " +
+                "FROM Reservas r " +
+                "JOIN Clientes c ON r.clienteId = c.clienteId " +
+                "JOIN Users u ON c.userId = u.id " +
+                "JOIN Paquetes p ON r.paqueteId = p.paqueteId " +
+                "WHERE r.estado = ?";
+
         try (Connection connection = conn.connect();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            String likeKeyword = "%" + keyword + "%";
-            ps.setString(1, likeKeyword);
-            ps.setString(2, likeKeyword);
+            ps.setString(1, estado.name());
+            ResultSet rs = ps.executeQuery();
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Reserva reserva = new Reserva();
-                    reserva.setReservaId(rs.getInt("reservaId"));
-                    reserva.setCliente(new Cliente(rs.getInt("clienteId")));
-                    reserva.setPaquete(new Paquete(rs.getInt("paqueteId")));
-                    reserva.setFechaReserva(rs.getDate("fechaReserva").toLocalDate());
-                    reserva.setEstado(EstadoReserva.fromString(rs.getString("estado")));
-                    resultados.add(reserva);
-                }
+            while (rs.next()) {
+                Reserva reserva = new Reserva();
+                reserva.setReservaId(rs.getInt("reservaId"));
+
+                Cliente cliente = new Cliente();
+                cliente.setClienteId(rs.getInt("clienteId"));
+                cliente.setNombre(rs.getString("clienteNombre"));
+                reserva.setCliente(cliente);
+
+                Paquete paquete = new Paquete();
+                paquete.setPaqueteId(rs.getInt("paqueteId"));
+                paquete.setNombre(rs.getString("paqueteNombre"));
+                reserva.setPaquete(paquete);
+
+                reserva.setEstado(EstadoReserva.valueOf(rs.getString("estado").toUpperCase()));
+                reserva.setFechaReserva(rs.getDate("fechaReserva").toLocalDate());
+
+                lista.add(reserva);
             }
         }
-        return resultados;
+
+        return lista;
     }
 }

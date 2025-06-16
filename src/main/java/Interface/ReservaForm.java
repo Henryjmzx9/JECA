@@ -6,6 +6,7 @@ import dominio.Reserva;
 import dominio.Usuario;
 import persistencia.ClienteDAO;
 import persistencia.PaqueteDAO;
+import persistencia.ReservaDAO;
 import persistencia.UsuarioDAO;
 import utils.CBOption;
 import utils.EstadoReserva;
@@ -24,6 +25,7 @@ public class ReservaForm extends JFrame {
     private ClienteDAO clienteDAO;
     private UsuarioDAO usuarioDAO;
     private PaqueteDAO paqueteDAO;
+    private ReservaDAO reservaDAO;
     private Reserva reserva;
 
     public ReservaForm() {
@@ -36,11 +38,13 @@ public class ReservaForm extends JFrame {
         clienteDAO = new ClienteDAO();
         usuarioDAO = new UsuarioDAO();
         paqueteDAO = new PaqueteDAO();
+        reservaDAO = new ReservaDAO();
         reserva = new Reserva();
 
         initCBClientes();
         initCBPaquetes();
         initCBEstado();
+        initActions();
 
         setVisible(true);
     }
@@ -53,7 +57,7 @@ public class ReservaForm extends JFrame {
             List<Cliente> clientes = clienteDAO.searchCliente("");
             for (Cliente c : clientes) {
                 Usuario u = usuarioDAO.getById(c.getUserId());
-                if (u != null) { // Validación para evitar null
+                if (u != null) {
                     model.addElement(new CBOption(u.getName(), c.getClienteId()));
                 }
             }
@@ -69,8 +73,7 @@ public class ReservaForm extends JFrame {
             DefaultComboBoxModel<CBOption> model = new DefaultComboBoxModel<>();
             model.addElement(new CBOption("Seleccione un paquete", 0));
 
-            // Corrección: Se agregó un segundo argumento en la llamada a search()
-            List<Paquete> paquetes = paqueteDAO.search("", ""); // Ahora recibe dos argumentos
+            List<Paquete> paquetes = paqueteDAO.search("", "");
             for (Paquete p : paquetes) {
                 model.addElement(new CBOption(p.getNombre(), p.getPaqueteId()));
             }
@@ -84,7 +87,7 @@ public class ReservaForm extends JFrame {
     private void initCBEstado() {
         try {
             DefaultComboBoxModel<CBOption> model = new DefaultComboBoxModel<>();
-            model.addElement(new CBOption("Seleccione un estado", "N/A")); // Evitamos null
+            model.addElement(new CBOption("Seleccione un estado", "N/A"));
             model.addElement(new CBOption("Pendiente", EstadoReserva.PENDIENTE));
             model.addElement(new CBOption("Confirmada", EstadoReserva.CONFIRMADA));
             model.addElement(new CBOption("Cancelada", EstadoReserva.CANCELADA));
@@ -112,6 +115,7 @@ public class ReservaForm extends JFrame {
         reserva.setCliente(cliente);
         reserva.setPaquete(paquete);
         reserva.setEstado(estado);
+        reserva.setFechaReserva(java.time.LocalDate.now());
 
         return true;
     }
@@ -146,5 +150,23 @@ public class ReservaForm extends JFrame {
                 }
             }
         }
+    }
+
+    private void initActions() {
+        btnGuardar.addActionListener(e -> {
+            if (getValuesControls()) {
+                try {
+                    reservaDAO.create(reserva);
+                    JOptionPane.showMessageDialog(this, "Reserva guardada correctamente.");
+                    dispose(); // Cerrar ventana
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error guardando reserva: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Debe seleccionar todos los campos obligatorios.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        btnSalir.addActionListener(e -> dispose());
     }
 }

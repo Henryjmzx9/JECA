@@ -7,5 +7,5 @@ public class PagoReadingForm {
     private JButton modificarButton;
     private JButton eliminarButton;
     private JTable table1;
-    private JButton button1;
+    private JButton crearButton;
 }

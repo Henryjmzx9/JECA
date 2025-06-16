@@ -5,18 +5,26 @@ public class Cliente {
     private int userId;
     private String telefono;
     private String direccion;
+    private String nombre;  // <-- Lo agregamos
+
     public Cliente() {
     }
 
-    public Cliente(int clienteId, int userId, String telefono, String direccion) {
+    public Cliente(int clienteId, int userId, String telefono, String direccion, String nombre) {
         this.clienteId = clienteId;
         this.userId = userId;
         this.telefono = telefono;
         this.direccion = direccion;
+        this.nombre = nombre;
     }
 
     public Cliente(int clienteId) {
         this.clienteId = clienteId;
+    }
+
+    public Cliente(int clienteId, String nombre) {
+        this.clienteId = clienteId;
+        this.nombre = nombre;
     }
 
     public int getUserId() {
@@ -51,9 +59,16 @@ public class Cliente {
         this.direccion = direccion;
     }
 
-    // Agregado para mostrar algo representativo en la UI
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    // Este método lo podés dejar o quitar según cómo prefieras mostrar en tablas
     public String getNombreCompleto() {
-        // Si en algún momento tienes nombre y apellido como atributos, reemplaza esta línea
-        return "Cliente #" + clienteId;
+        return nombre != null ? nombre : "Cliente #" + clienteId;
     }
 }
