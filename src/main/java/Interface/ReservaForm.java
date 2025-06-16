@@ -9,12 +9,14 @@ import persistencia.PaqueteDAO;
 import persistencia.ReservaDAO;
 import persistencia.UsuarioDAO;
 import utils.CBOption;
+import utils.CUD;
 import utils.EstadoReserva;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
-public class ReservaForm extends JFrame {
+public class ReservaForm extends JDialog {
     private JPanel mainPanel;
     private JComboBox<CBOption> cbClientes;
     private JComboBox<CBOption> cbPaquetes;
@@ -27,23 +29,28 @@ public class ReservaForm extends JFrame {
     private PaqueteDAO paqueteDAO;
     private ReservaDAO reservaDAO;
     private Reserva reserva;
+    private CUD modo;
 
-    public ReservaForm() {
-        setContentPane(mainPanel);
-        setTitle("Gestión de Reservas");
-        setSize(500, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    public ReservaForm(Window parent, CUD cud, Reserva reserva) {
+        super(parent, "Formulario de Reserva", ModalityType.APPLICATION_MODAL);
+
+        this.reserva = reserva;
+        this.modo = cud;
 
         clienteDAO = new ClienteDAO();
         usuarioDAO = new UsuarioDAO();
         paqueteDAO = new PaqueteDAO();
         reservaDAO = new ReservaDAO();
-        reserva = new Reserva();
+
+        setContentPane(mainPanel);
+        setSize(500, 400);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         initCBClientes();
         initCBPaquetes();
         initCBEstado();
+        setValuesControls();
         initActions();
 
         setVisible(true);
@@ -156,14 +163,20 @@ public class ReservaForm extends JFrame {
         btnGuardar.addActionListener(e -> {
             if (getValuesControls()) {
                 try {
-                    reservaDAO.create(reserva);
+                    if (modo == CUD.CREATE) {
+                        reservaDAO.create(reserva);
+                    } else if (modo == CUD.UPDATE) {
+                        reservaDAO.update(reserva);
+                    }
+
                     JOptionPane.showMessageDialog(this, "Reserva guardada correctamente.");
-                    dispose(); // Cerrar ventana
+                    dispose(); // Cierra el formulario
+
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Error guardando reserva: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar todos los campos obligatorios.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Debe completar todos los campos obligatorios.", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 

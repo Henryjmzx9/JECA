@@ -53,8 +53,9 @@ public class MainForm extends JFrame {
         JMenuItem itemChangeUser = new JMenuItem("Cambiar de usuario");
         menuPerfil.add(itemChangeUser);
         itemChangeUser.addActionListener(e -> {
+            this.setUserAutenticate(null); // Eliminar el usuario actual
             LoginForm loginForm = new LoginForm(this);
-            loginForm.setVisible(true);
+            loginForm.setVisible(true); // Mostrar el LoginForm para un nuevo inicio de sesión
         });
 
         JMenuItem itemSalir = new JMenuItem("Salir");
@@ -123,6 +124,12 @@ public class MainForm extends JFrame {
     private void configureMenuAccess() {
         if (userAutenticate != null) {
             Rol rol = userAutenticate.getRol();
+
+            // Habilitar todas las opciones al principio
+            itemReservas.setEnabled(true);
+            itemPagos.setEnabled(true);
+            itemUsers.setEnabled(true);
+            menuMantenimiento.setEnabled(true);
 
             switch (rol) {
                 case Administrador -> {

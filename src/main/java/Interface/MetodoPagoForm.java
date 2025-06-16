@@ -14,83 +14,102 @@ public class MetodoPagoForm extends JDialog {
 
     private MetodoPagoDAO metodoPagoDAO;
     private CUD cud;
-    private MetodoPago en;
+    private MetodoPago metodoPago;
 
-    // Constructor correcto: recibe parent, cud y MetodoPago
     public MetodoPagoForm(JFrame parent, CUD cud, MetodoPago metodoPago) {
         this.cud = cud;
-        this.en = metodoPago;
-        metodoPagoDAO = new MetodoPagoDAO();
+        this.metodoPago = metodoPago != null ? metodoPago : new MetodoPago();
+        this.metodoPagoDAO = new MetodoPagoDAO();
 
         setContentPane(metodoPagoPanel);
         setModal(true);
         init();
         pack();
-        setLocationRelativeTo(parent); // ahora sí, porque parent viene como parámetro
+        setLocationRelativeTo(parent);
 
-        btnCancel.addActionListener(e -> this.dispose());
+        btnCancel.addActionListener(e -> dispose());
         btnOk.addActionListener(e -> ok());
     }
 
     private void init() {
-        switch (this.cud) {
+        switch (cud) {
             case CREATE:
                 setTitle("Agregar Método de Pago");
                 btnOk.setText("Guardar");
                 break;
-            default:
-                // Solo CREATE permitido en este formulario
+            case UPDATE:
+                setTitle("Modificar Método de Pago");
+                btnOk.setText("Actualizar");
+                break;
+            case DELETE:
+                setTitle("Eliminar Método de Pago");
+                btnOk.setText("Eliminar");
+                txtNombreMetodo.setEnabled(false); // deshabilita edición
                 break;
         }
 
-        setValuesControls(this.en);
+        setValuesControls(metodoPago);
     }
 
     private void setValuesControls(MetodoPago metodoPago) {
-        txtNombreMetodo.setText("");
+        if (metodoPago != null) {
+            txtNombreMetodo.setText(metodoPago.getNombreMetodo());
+        } else {
+            txtNombreMetodo.setText("");
+        }
     }
 
     private boolean getValuesControls() {
-        if (txtNombreMetodo.getText().trim().isEmpty()) {
+        if (cud == CUD.DELETE) return true; // no se necesita validar campos para eliminar
+
+        String nombre = txtNombreMetodo.getText().trim();
+        if (nombre.isEmpty()) {
             return false;
         }
-        this.en.setNombreMetodo(txtNombreMetodo.getText().trim());
+        metodoPago.setNombreMetodo(nombre);
         return true;
     }
 
     private void ok() {
         try {
-            boolean res = getValuesControls();
-
-            if (res) {
-                boolean r = false;
-
-                if (this.cud == CUD.CREATE) {
-                    MetodoPago mp = metodoPagoDAO.create(this.en);
-                    if (mp.getMetodoPagoId() > 0) {
-                        r = true;
-                    }
-                }
-
-                if (r) {
-                    JOptionPane.showMessageDialog(null,
-                            "Método de pago registrado correctamente",
-                            "Información", JOptionPane.INFORMATION_MESSAGE);
-                    this.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            "No se logró realizar la operación",
-                            "ERROR", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "El campo Nombre Método es obligatorio",
+            boolean valoresCorrectos = getValuesControls();
+            if (!valoresCorrectos) {
+                JOptionPane.showMessageDialog(this,
+                        "El campo Nombre Método es obligatorio.",
                         "Validación", JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            boolean operacionExitosa = false;
+
+            switch (cud) {
+                case CREATE:
+                    MetodoPago creado = metodoPagoDAO.create(metodoPago);
+                    operacionExitosa = creado != null && creado.getMetodoPagoId() > 0;
+                    break;
+                case UPDATE:
+                    operacionExitosa = metodoPagoDAO.update(metodoPago);
+                    break;
+                case DELETE:
+                    operacionExitosa = metodoPagoDAO.delete(metodoPago.getMetodoPagoId());
+                    break;
+            }
+
+            if (operacionExitosa) {
+                JOptionPane.showMessageDialog(this,
+                        "Operación realizada exitosamente.",
+                        "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo completar la operación.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null,
-                    ex.getMessage(),
-                    "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

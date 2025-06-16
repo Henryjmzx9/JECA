@@ -24,8 +24,7 @@ public class ReservaReadingForm extends JDialog {
     private DefaultTableModel tableModel;
 
     public ReservaReadingForm(Window parent) {
-        super(parent, "Gestión de Reservas", ModalityType.APPLICATION_MODAL);
-
+        super(parent, "Gestión de Reservas", ModalityType.MODELESS);
         reservaDAO = new ReservaDAO();
 
         initComponents();
@@ -55,7 +54,6 @@ public class ReservaReadingForm extends JDialog {
         cbEstado.addItem(new CBOption("Pendiente", EstadoReserva.PENDIENTE));
         cbEstado.addItem(new CBOption("Confirmada", EstadoReserva.CONFIRMADA));
         cbEstado.addItem(new CBOption("Cancelada", EstadoReserva.CANCELADA));
-
         topPanel.add(cbEstado);
 
         btnCrear = new JButton("Crear");
@@ -64,8 +62,8 @@ public class ReservaReadingForm extends JDialog {
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
         tableModel = new DefaultTableModel(
-                new String[]{"ID", "Cliente", "Paquete", "Estado", "Fecha Reserva"},
-                0) {
+                new String[]{"ID", "Cliente", "Paquete", "Estado", "Fecha Reserva"}, 0
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -116,27 +114,33 @@ public class ReservaReadingForm extends JDialog {
             }
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al cargar reservas: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al cargar reservas: " + ex.getMessage(),
+                    "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void openReservaForm(CUD cud, Reserva reserva) {
-        ReservaForm form = new ReservaForm();
+        ReservaForm form = new ReservaForm(this, cud, reserva != null ? reserva : new Reserva());
         form.setVisible(true);
-        loadTableData();
+        loadTableData(); // refresca después de cerrar el formulario
     }
 
     private Reserva getSelectedReserva() {
         int selectedRow = tableReserva.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una reserva de la tabla", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Seleccione una reserva de la tabla",
+                    "Aviso", JOptionPane.WARNING_MESSAGE);
             return null;
         }
         int id = (int) tableModel.getValueAt(selectedRow, 0);
         try {
             return reservaDAO.getById(id);
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error al obtener reserva: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Error al obtener reserva: " + ex.getMessage(),
+                    "ERROR", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
@@ -161,10 +165,14 @@ public class ReservaReadingForm extends JDialog {
                         JOptionPane.showMessageDialog(this, "Reserva eliminada correctamente.");
                         loadTableData();
                     } else {
-                        JOptionPane.showMessageDialog(this, "No se pudo eliminar la reserva.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this,
+                                "No se pudo eliminar la reserva.",
+                                "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(this, "Error al eliminar reserva: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "Error al eliminar reserva: " + ex.getMessage(),
+                            "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

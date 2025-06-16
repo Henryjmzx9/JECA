@@ -1,16 +1,21 @@
 package Interface;
 
 import dominio.Paquete;
+import dominio.Pago;
 import dominio.Reserva;
+import dominio.MetodoPago;
 import persistencia.MetodoPagoDAO;
 import persistencia.PaqueteDAO;
+import persistencia.PagoDAO;
 import persistencia.ReservaDAO;
 import utils.CBOption;
+import utils.CUD;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
-public class PagoForm extends JFrame {
+public class PagoForm extends JDialog {
     private JPanel mainPanel;
     private JComboBox<CBOption> cbReserva;
     private JComboBox<CBOption> cbMPago;
@@ -21,21 +26,33 @@ public class PagoForm extends JFrame {
     private ReservaDAO reservaDAO;
     private MetodoPagoDAO metodoPagoDAO;
     private PaqueteDAO paqueteDAO;
+    private PagoDAO pagoDAO;
 
-    public PagoForm() {
+    private CUD cud;
+    private Pago pago;
+
+    public PagoForm(Window parent, CUD cud, Pago pago) {
+        super(parent, "Formulario de Pago", ModalityType.APPLICATION_MODAL);
+        this.cud = cud;
+        this.pago = pago;
+
         setContentPane(mainPanel);
-        setTitle("Registro de Pago");
         setSize(500, 300);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         reservaDAO = new ReservaDAO();
         metodoPagoDAO = new MetodoPagoDAO();
         paqueteDAO = new PaqueteDAO();
+        pagoDAO = new PagoDAO();
 
         initCBReservas();
         initCBMetodoPago();
         initActions();
+
+        if (cud == CUD.UPDATE && pago != null) {
+            loadPagoData(pago);
+        }
 
         setVisible(true);
     }
@@ -74,8 +91,29 @@ public class PagoForm extends JFrame {
         }
     }
 
+    private void loadPagoData(Pago pago) {
+        // Selecciona la reserva correspondiente
+        for (int i = 0; i < cbReserva.getItemCount(); i++) {
+            CBOption item = cbReserva.getItemAt(i);
+            if ((int) item.getValue() == pago.getReserva().getReservaId()) {
+                cbReserva.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        // Selecciona el método de pago correspondiente
+        for (int i = 0; i < cbMPago.getItemCount(); i++) {
+            CBOption item = cbMPago.getItemAt(i);
+            if ((int) item.getValue() == pago.getMetodoPago().getMetodoPagoId()) {
+                cbMPago.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        txtMonto.setText(String.valueOf(pago.getMonto()));
+    }
+
     private void initActions() {
-        // Al cambiar la reserva, cargar automáticamente el precio del paquete
         cbReserva.addActionListener(e -> {
             CBOption selected = (CBOption) cbReserva.getSelectedItem();
             if (selected != null && (int) selected.getValue() != 0) {
@@ -92,7 +130,6 @@ public class PagoForm extends JFrame {
             }
         });
 
-        // Botón Guardar
         btnGuardar.addActionListener(e -> {
             try {
                 CBOption selectedReserva = (CBOption) cbReserva.getSelectedItem();
@@ -119,19 +156,23 @@ public class PagoForm extends JFrame {
                     return;
                 }
 
-                // Crear pago
-                persistencia.PagoDAO pagoDAO = new persistencia.PagoDAO();
-                dominio.Pago pago = new dominio.Pago();
-                pago.setReservaId((int) selectedReserva.getValue());
-                pago.setMetodoPagoId((int) selectedMetodoPago.getValue());
-                pago.setMonto(monto);
-                pago.setFechaPago(new java.util.Date());
+                if (cud == CUD.CREATE) {
+                    Pago nuevoPago = new Pago();
+                    nuevoPago.setReservaId((int) selectedReserva.getValue());
+                    nuevoPago.setMetodoPagoId((int) selectedMetodoPago.getValue());
+                    nuevoPago.setMonto(monto);
+                    nuevoPago.setFechaPago(new java.util.Date());
+                    pagoDAO.create(nuevoPago);
+                    JOptionPane.showMessageDialog(this, "Pago creado correctamente.");
+                } else if (cud == CUD.UPDATE && pago != null) {
+                    pago.setReservaId((int) selectedReserva.getValue());
+                    pago.setMetodoPagoId((int) selectedMetodoPago.getValue());
+                    pago.setMonto(monto);
+                    pagoDAO.update(pago);
+                    JOptionPane.showMessageDialog(this, "Pago actualizado correctamente.");
+                }
 
-                pagoDAO.create(pago);
-
-                JOptionPane.showMessageDialog(this, "Pago guardado correctamente.", "ÉXITO", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
-
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Monto inválido.", "ERROR", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
@@ -140,7 +181,6 @@ public class PagoForm extends JFrame {
             }
         });
 
-        // Botón Salir
         btnSalir.addActionListener(e -> dispose());
     }
 }

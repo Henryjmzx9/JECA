@@ -122,8 +122,7 @@ public class PagoReadingForm extends JDialog {
         }
     }
     private void openPagoForm(CUD cud, Pago pago) {
-        PagoForm form = new PagoForm();
-        form.setVisible(true);
+        new PagoForm(this, cud, pago != null ? pago : new Pago());
         loadTableData();
     }
 

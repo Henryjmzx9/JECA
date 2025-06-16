@@ -24,10 +24,10 @@ public class ReadingPaqueteViajeForm extends JDialog {
     private DefaultTableModel tableModel;
 
     public ReadingPaqueteViajeForm(Window parent) {
-        super(parent, "Gestión de Paquetes de Viaje", ModalityType.APPLICATION_MODAL);
+        super(parent, "Gestión de Paquetes de Viaje", ModalityType.MODELESS); // ← AQUÍ el cambio de modalidad
 
         paqueteDAO = new PaqueteDAO();
-        destinoDAO = new DestinoDAO();  // ✅ Instancia de DestinoDAO
+        destinoDAO = new DestinoDAO();
 
         initComponents();
 
@@ -36,30 +36,32 @@ public class ReadingPaqueteViajeForm extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        // Eventos
         btnCreate.addActionListener(e -> openPaqueteForm(CUD.CREATE, null));
         btnUpdate.addActionListener(e -> updateSelectedPaquete());
         btnDelete.addActionListener(e -> deleteSelectedPaquete());
-
         textName.addActionListener(e -> loadTableData(textName.getText().trim()));
 
-        loadTableData("");
+        loadTableData(""); // Cargar datos iniciales
     }
 
     private void initComponents() {
         mainPanel = new JPanel(new BorderLayout(10, 10));
 
+        // Panel superior de búsqueda y botón crear
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(new JLabel("Buscar:"));
         textName = new JTextField(20);
         topPanel.add(textName);
         btnCreate = new JButton("Crear");
         topPanel.add(btnCreate);
-
         mainPanel.add(topPanel, BorderLayout.NORTH);
 
+        // Tabla de paquetes
         tableModel = new DefaultTableModel(
                 new String[]{"ID", "Nombre", "Descripción", "Precio", "Duración (días)", "Fecha Inicio", "Fecha Fin", "Destino"},
-                0) {
+                0
+        ) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -70,12 +72,12 @@ public class ReadingPaqueteViajeForm extends JDialog {
         JScrollPane scrollPane = new JScrollPane(tablepaquetes);
         mainPanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Panel inferior con botones actualizar y eliminar
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnUpdate = new JButton("Actualizar");
         btnDelete = new JButton("Eliminar");
         bottomPanel.add(btnUpdate);
         bottomPanel.add(btnDelete);
-
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -109,8 +111,8 @@ public class ReadingPaqueteViajeForm extends JDialog {
 
     private void openPaqueteForm(CUD cud, Paquete paquete) {
         PaqueteViajeForm form = new PaqueteViajeForm(this, cud, paquete != null ? paquete : new Paquete());
-        form.setVisible(true);
-        loadTableData(textName.getText().trim());
+        form.setVisible(true); // Esto sí funcionará ahora
+        loadTableData(textName.getText().trim()); // Recargar la tabla al cerrar el formulario
     }
 
     private Paquete getSelectedPaquete() {
