@@ -1,10 +1,8 @@
 package persistencia;
+
 import dominio.MetodoPago;
 import dominio.Pago;
 import dominio.Reserva;
-import persistencia.ConnectionManager;
-import persistencia.MetodoPagoDAO;
-import persistencia.ReservaDAO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -80,35 +78,38 @@ public class PagoDAO {
             ps.setInt(1, pagoId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    pago = mapResultSetToPago(rs);
+                    pago = mapResultSetToPago(rs, connection);
                 }
             }
         }
         return pago;
     }
 
-    public ArrayList<Pago> getByReservaId(int reservaId, Connection connection) throws SQLException {
+    public ArrayList<Pago> getByReservaId(int reservaId) throws SQLException {
         ArrayList<Pago> pagos = new ArrayList<>();
         String sql = "SELECT pagoId, reservaId, monto, metodoPagoId, fechaPago FROM " + TABLE_NAME + " WHERE reservaId = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
             ps.setInt(1, reservaId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    pagos.add(mapResultSetToPago(rs));
+                    pagos.add(mapResultSetToPago(rs, connection));
                 }
             }
         }
         return pagos;
     }
 
-    public ArrayList<Pago> getAll(Connection connection) throws SQLException {
+    public ArrayList<Pago> getAll() throws SQLException {
         ArrayList<Pago> pagos = new ArrayList<>();
         String sql = "SELECT pagoId, reservaId, monto, metodoPagoId, fechaPago FROM " + TABLE_NAME;
-        try (PreparedStatement ps = connection.prepareStatement(sql);
+        try (Connection connection = conn.connect();
+             PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                pagos.add(mapResultSetToPago(rs));
+                pagos.add(mapResultSetToPago(rs, connection));
             }
         }
         return pagos;
@@ -123,14 +124,14 @@ public class PagoDAO {
             ps.setInt(1, metodoPagoId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    pagos.add(mapResultSetToPago(rs));
+                    pagos.add(mapResultSetToPago(rs, connection));
                 }
             }
         }
         return pagos;
     }
 
-    private Pago mapResultSetToPago(ResultSet rs) throws SQLException {
+    private Pago mapResultSetToPago(ResultSet rs, Connection connection) throws SQLException {
         Pago pago = new Pago();
         pago.setPagoId(rs.getInt("pagoId"));
         pago.setReservaId(rs.getInt("reservaId"));
@@ -138,9 +139,8 @@ public class PagoDAO {
         pago.setMetodoPagoId(rs.getInt("metodoPagoId"));
         pago.setFechaPago(rs.getDate("fechaPago"));
 
-        // Objetos relacionados
-        Reserva reserva = reservaDAO.getById(pago.getReservaId());
-        MetodoPago metodoPago = metodoPagoDAO.getById(pago.getMetodoPagoId());
+        Reserva reserva = reservaDAO.getById(pago.getReservaId(), connection);
+        MetodoPago metodoPago = metodoPagoDAO.getById(pago.getMetodoPagoId(), connection);
 
         pago.setReserva(reserva);
         pago.setMetodoPago(metodoPago);

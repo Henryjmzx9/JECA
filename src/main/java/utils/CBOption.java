@@ -39,10 +39,19 @@ public class CBOption {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
         CBOption other = (CBOption) obj;
-        return this.getValue().equals(other.getValue());
+
+        if (this.value == null && other.value == null) return true;
+        if (this.value == null || other.value == null) return false;
+
+        return this.value.equals(other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value != null ? value.hashCode() : 0;
     }
 }

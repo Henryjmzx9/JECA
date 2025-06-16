@@ -88,7 +88,21 @@ public class MetodoPagoDAO {
         }
         return lista;
     }
-
+    public MetodoPago getById(int id, Connection connection) throws SQLException {
+        String sql = "SELECT * FROM MetodoPago WHERE metodoPagoId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    MetodoPago metodo = new MetodoPago();
+                    metodo.setMetodoPagoId(rs.getInt("metodoPagoId"));
+                    metodo.setNombreMetodo(rs.getString("nombreMetodo"));
+                    return metodo;
+                }
+            }
+        }
+        return null;
+    }
     public ArrayList<MetodoPago> search(String nombreMetodo) throws SQLException {
         ArrayList<MetodoPago> lista = new ArrayList<>();
         String sql = "SELECT metodoPagoId, nombreMetodo FROM " + TABLE_NAME + " WHERE nombreMetodo LIKE ?";

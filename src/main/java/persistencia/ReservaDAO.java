@@ -135,6 +135,21 @@ public class ReservaDAO {
         return lista;
     }
 
+    public Reserva getById(int id, Connection connection) throws SQLException {
+        String sql = "SELECT * FROM Reservas WHERE reservaId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Reserva reserva = new Reserva();
+                    reserva.setReservaId(rs.getInt("reservaId"));
+                    // Aquí puedes mapear más campos si existen
+                    return reserva;
+                }
+            }
+        }
+        return null;
+    }
     public ArrayList<Reserva> searchByEstado(EstadoReserva estado) throws SQLException {
         ArrayList<Reserva> lista = new ArrayList<>();
 

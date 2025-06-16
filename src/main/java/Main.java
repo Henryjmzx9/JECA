@@ -1,6 +1,3 @@
-
-
-
 import Interface.LoginForm;
 import Interface.MainForm;
 import javax.swing.*;

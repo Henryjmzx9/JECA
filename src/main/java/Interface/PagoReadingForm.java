@@ -9,10 +9,9 @@ import utils.CUD;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.sql.Connection;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
-import persistencia.ConnectionManager;
 
 public class PagoReadingForm extends JDialog {
     private JPanel mainPanel;
@@ -97,14 +96,14 @@ public class PagoReadingForm extends JDialog {
     }
 
     private void loadTableData() {
-        try (Connection conn = ConnectionManager.getConnection()) {
+        try {
             CBOption selectedReserva = (CBOption) cbId.getSelectedItem();
             ArrayList<Pago> pagos;
 
             if (selectedReserva != null && (int) selectedReserva.getValue() != 0) {
-                pagos = pagoDAO.getByReservaId((int) selectedReserva.getValue(), conn);
+                pagos = pagoDAO.getByReservaId((int) selectedReserva.getValue());
             } else {
-                pagos = pagoDAO.getAll(conn);
+                pagos = pagoDAO.getAll();
             }
 
             tableModel.setRowCount(0);

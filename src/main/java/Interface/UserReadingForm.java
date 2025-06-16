@@ -20,51 +20,82 @@ public class UserReadingForm extends JDialog {
 
     private UsuarioDAO userDAO;
     private MainForm mainForm;
-    private ArrayList<Usuario> Users;
 
     public UserReadingForm(MainForm mainForm) {
         this.mainForm = mainForm;
-        userDAO = new UsuarioDAO();
+        this.userDAO = new UsuarioDAO();
+
         setContentPane(mainPanel);
         setModal(true);
         setTitle("Gestión de Usuarios");
         pack();
         setLocationRelativeTo(mainForm);
 
+        // Asegura que se puedan seleccionar filas
+        tableUsers.setRowSelectionAllowed(true);
+        tableUsers.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // Cargar todos los usuarios al iniciar
+        loadAllUsers();
+
+        // Buscar usuarios al escribir
         txtName.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                if (!txtName.getText().trim().isEmpty()) {
-                    search(txtName.getText());
+                String query = txtName.getText().trim();
+                if (!query.isEmpty()) {
+                    search(query);
                 } else {
-                    tableUsers.setModel(new DefaultTableModel());
+                    loadAllUsers();
                 }
             }
         });
 
+        // Crear usuario
         btnCreate.addActionListener(e -> {
-            UserWriteForm form = new UserWriteForm(this.mainForm, CUD.CREATE, new Usuario());
+            System.out.println("Botón CREAR presionado");
+            UserWriteForm form = new UserWriteForm(mainForm, CUD.CREATE, new Usuario());
             form.setVisible(true);
-            tableUsers.setModel(new DefaultTableModel());
+            loadAllUsers();
         });
 
+        // Actualizar usuario
         btnUpdate.addActionListener(e -> {
+            System.out.println("Botón MODIFICAR presionado");
             Usuario user = getUserFromTableRow();
             if (user != null) {
-                UserWriteForm form = new UserWriteForm(this.mainForm, CUD.UPDATE, user);
+                System.out.println("Usuario seleccionado para MODIFICAR: " + user.getId());
+                UserWriteForm form = new UserWriteForm(mainForm, CUD.UPDATE, user);
                 form.setVisible(true);
-                tableUsers.setModel(new DefaultTableModel());
+                loadAllUsers();
             }
         });
 
+        // Eliminar usuario
         btnDelete.addActionListener(e -> {
+            System.out.println("Botón ELIMINAR presionado");
             Usuario user = getUserFromTableRow();
             if (user != null) {
-                UserWriteForm form = new UserWriteForm(this.mainForm, CUD.DELETE, user);
-                form.setVisible(true);
-                tableUsers.setModel(new DefaultTableModel());
+                int confirm = JOptionPane.showConfirmDialog(this,
+                        "¿Estás seguro de que deseas eliminar este usuario?",
+                        "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    System.out.println("Usuario confirmado para ELIMINAR: " + user.getId());
+                    UserWriteForm form = new UserWriteForm(mainForm, CUD.DELETE, user);
+                    form.setVisible(true);
+                    loadAllUsers();
+                }
             }
         });
+    }
+
+    private void loadAllUsers() {
+        try {
+            ArrayList<Usuario> users = userDAO.getAll();
+            createTable(users);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void search(String query) {
@@ -72,7 +103,7 @@ public class UserReadingForm extends JDialog {
             ArrayList<Usuario> users = userDAO.search(query);
             createTable(users);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -89,14 +120,13 @@ public class UserReadingForm extends JDialog {
         model.addColumn("Email");
         model.addColumn("Estatus");
 
-        Object[] row = new Object[4];
-        for (int i = 0; i < users.size(); i++) {
-            Usuario user = users.get(i);
-            row[0] = user.getId();
-            row[1] = user.getName();
-            row[2] = user.getEmail();
-            row[3] = user.getStrEstatus();
-            model.addRow(row);
+        for (Usuario user : users) {
+            model.addRow(new Object[]{
+                    user.getId(),
+                    user.getName(),
+                    user.getEmail(),
+                    user.getStrEstatus()
+            });
         }
 
         tableUsers.setModel(model);
@@ -104,31 +134,33 @@ public class UserReadingForm extends JDialog {
     }
 
     private void hideCol(int col) {
-        tableUsers.getColumnModel().getColumn(col).setMaxWidth(0);
         tableUsers.getColumnModel().getColumn(col).setMinWidth(0);
-        tableUsers.getTableHeader().getColumnModel().getColumn(col).setMaxWidth(0);
+        tableUsers.getColumnModel().getColumn(col).setMaxWidth(0);
         tableUsers.getTableHeader().getColumnModel().getColumn(col).setMinWidth(0);
+        tableUsers.getTableHeader().getColumnModel().getColumn(col).setMaxWidth(0);
     }
 
     private Usuario getUserFromTableRow() {
         try {
             int selectedRow = tableUsers.getSelectedRow();
             if (selectedRow != -1) {
-                int id = (int) tableUsers.getValueAt(selectedRow, 0);
-                Usuario user = userDAO.getById(id);
-                if (user.getId() == 0) {
-                    JOptionPane.showMessageDialog(null, "No se encontró el usuario.", "Validación", JOptionPane.WARNING_MESSAGE);
-                    return null;
+                int id = (int) tableUsers.getModel().getValueAt(selectedRow, 0);
+                System.out.println("Fila seleccionada. ID: " + id);
+                Usuario usuario = userDAO.getById(id);
+                if (usuario != null) {
+                    System.out.println("Usuario obtenido desde BD: " + usuario.getName());
+                } else {
+                    System.out.println("Usuario con ID no encontrado en BD.");
                 }
-                return user;
+                return usuario;
             } else {
-                JOptionPane.showMessageDialog(null, "Selecciona una fila.", "Validación", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Selecciona una fila.", "Validación", JOptionPane.WARNING_MESSAGE);
                 return null;
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
 }
-
