@@ -5,7 +5,9 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-9014152"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="10207" class="javax.swing.JLabel">
@@ -34,6 +36,9 @@
           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="1" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-5034459"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-1118496"/>
           <text value="Ir a eliminar"/>
         </properties>
       </component>
@@ -42,6 +47,9 @@
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-13229954"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-328981"/>
           <text value="Ir a modificar"/>
         </properties>
       </component>
@@ -50,6 +58,9 @@
           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-11827119"/>
+          <font name="Courier New" style="0"/>
+          <foreground color="-1118496"/>
           <text value="Ir a crear"/>
         </properties>
       </component>

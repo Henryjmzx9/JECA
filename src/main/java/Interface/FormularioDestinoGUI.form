@@ -5,7 +5,9 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <background color="-9014152"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="cae0c" class="javax.swing.JLabel">
@@ -54,13 +56,18 @@
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
-        <properties/>
+        <properties>
+          <font name="Courier New" style="1"/>
+        </properties>
       </component>
       <component id="373de" class="javax.swing.JButton" binding="cargarButton" default-binding="true">
         <constraints>
           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-8884189"/>
+          <font name="Courier New" style="1"/>
+          <foreground color="-328981"/>
           <text value="Cargar"/>
         </properties>
       </component>
@@ -69,6 +76,9 @@
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-13229954"/>
+          <font name="Courier New" style="1"/>
+          <foreground color="-328981"/>
           <text value="Guardar"/>
         </properties>
       </component>
@@ -77,6 +87,9 @@
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <background color="-16382713"/>
+          <font name="Courier New" style="1"/>
+          <foreground color="-328981"/>
           <text value="Seleccionar Imagen"/>
         </properties>
       </component>
