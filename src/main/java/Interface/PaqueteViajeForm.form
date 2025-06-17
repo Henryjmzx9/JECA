@@ -15,7 +15,7 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Nombre"/>
+          <text value="Nombre*"/>
         </properties>
       </component>
       <vspacer id="e528f">
@@ -36,7 +36,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Precio"/>
+          <text value="Precio*"/>
         </properties>
       </component>
       <component id="5269d" class="javax.swing.JTextField" binding="txtPrecio">
@@ -52,7 +52,7 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Descripción"/>
+          <text value="Descripción*"/>
         </properties>
       </component>
       <component id="fdaa0" class="javax.swing.JLabel">
@@ -60,7 +60,7 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Duración días"/>
+          <text value="Duración días*"/>
         </properties>
       </component>
       <component id="9bf46" class="javax.swing.JSpinner" binding="spnDuracionDias">
@@ -74,7 +74,7 @@
           <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Destino"/>
+          <text value="Destino*"/>
         </properties>
       </component>
       <component id="18fb" class="javax.swing.JComboBox" binding="cbDestino">

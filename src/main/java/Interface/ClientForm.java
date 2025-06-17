@@ -26,7 +26,6 @@ public class ClientForm extends JDialog {
     private CUD cud;
     private Usuario cliente;
 
-
     public ClientForm(Window parent, CUD cud, Usuario cliente) {
         super(parent);
         this.cud = cud;
@@ -110,8 +109,28 @@ public class ClientForm extends JDialog {
         CBOption selected = (CBOption) cbUsers.getSelectedItem();
         int userId = selected != null ? (int) selected.getValue() : 0;
 
-        if (textTelefono.getText().trim().isEmpty() || userId == 0
-                || (cud != CUD.CREATE && (cliente == null || cliente.getId() == 0))) {
+        String telefono = textTelefono.getText().trim();
+        String descripcion = textDescripcion.getText().trim();
+
+        // Validaciones
+        if (userId == 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione un usuario válido.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (telefono.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El teléfono es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Validación teléfono: números, espacios, +, - y mínimo 7 caracteres
+        if (!telefono.matches("^[\\d\\s+\\-]{7,15}$")) {
+            JOptionPane.showMessageDialog(this, "El teléfono debe tener entre 7 y 15 caracteres y solo puede contener números, espacios, '+' o '-'.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "La descripción es obligatoria.", "Validación", JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
@@ -120,8 +139,8 @@ public class ClientForm extends JDialog {
         }
 
         cliente.setId(userId);
-        cliente.setTelefono(textTelefono.getText());
-        cliente.setDescripcion(textDescripcion.getText());
+        cliente.setTelefono(telefono);
+        cliente.setDescripcion(descripcion);
 
         return true;
     }
@@ -172,7 +191,7 @@ public class ClientForm extends JDialog {
                 }
 
             } else {
-                JOptionPane.showMessageDialog(null, "Complete los campos obligatorios", "Validación", JOptionPane.WARNING_MESSAGE);
+                // El mensaje ya es mostrado en getValuesControls()
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);

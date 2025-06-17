@@ -16,7 +16,7 @@
         </constraints>
         <properties>
           <font name="Arial" style="1"/>
-          <text value="Teléfono"/>
+          <text value="Teléfono*"/>
         </properties>
       </component>
       <vspacer id="a6712">
@@ -38,7 +38,7 @@
         </constraints>
         <properties>
           <font name="Arial" style="1"/>
-          <text value="Dirección"/>
+          <text value="Dirección*"/>
         </properties>
       </component>
       <component id="dc51" class="javax.swing.JTextField" binding="textDescripcion">
@@ -66,7 +66,7 @@
         </constraints>
         <properties>
           <font name="Arial" style="1"/>
-          <text value="Nombre "/>
+          <text value="Nombre *"/>
         </properties>
       </component>
       <component id="2308" class="javax.swing.JButton" binding="btnSalir">

@@ -7,7 +7,7 @@ import utils.CUD;
 import utils.Rol;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.util.regex.Pattern;
 
 public class UserWriteForm extends JDialog {
     private JPanel mainPanel;
@@ -101,37 +101,60 @@ public class UserWriteForm extends JDialog {
     }
 
     private boolean getValuesControls() {
-        boolean res = false;
-
         CBOption selectedStatus = (CBOption) cbStatus.getSelectedItem();
         CBOption selectedRol = (CBOption) cbRol.getSelectedItem();
 
         byte status = selectedStatus != null ? (byte) selectedStatus.getValue() : 0;
         Rol rol = selectedRol != null ? (Rol) selectedRol.getValue() : null;
 
-        if (txtName.getText().trim().isEmpty()) {
-            return res;
-        } else if (txtEmail.getText().trim().isEmpty()) {
-            return res;
-        } else if (status == (byte) 0) {
-            return res;
-        } else if (rol == null) {
-            return res;
-        } else if (this.cud != CUD.CREATE && this.en.getId() == 0) {
-            return res;
+        String name = txtName.getText().trim();
+        String email = txtEmail.getText().trim();
+
+        // Validaciones con mensajes
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El nombre es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
         }
 
-        this.en.setName(txtName.getText());
-        this.en.setEmail(txtEmail.getText());
-        this.en.setStatus(status);
-        this.en.setRol(rol);
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Validación básica de email
+        if (!Pattern.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$", email)) {
+            JOptionPane.showMessageDialog(this, "El correo electrónico no tiene un formato válido.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (status == (byte) 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione un estado válido.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (rol == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione un rol válido.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (this.cud != CUD.CREATE && this.en.getId() == 0) {
+            JOptionPane.showMessageDialog(this, "El usuario seleccionado no es válido.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
 
         if (this.cud == CUD.CREATE) {
-            this.en.setPasswordHash(new String(txtPassword.getPassword()));
-            if (this.en.getPasswordHash().trim().isEmpty()) {
+            String pwd = new String(txtPassword.getPassword()).trim();
+            if (pwd.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "La contraseña es obligatoria.", "Validación", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
+            this.en.setPasswordHash(pwd);
         }
+
+        this.en.setName(name);
+        this.en.setEmail(email);
+        this.en.setStatus(status);
+        this.en.setRol(rol);
 
         return true;
     }
@@ -168,11 +191,8 @@ public class UserWriteForm extends JDialog {
                             "No se logro realizar la operación",
                             "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                JOptionPane.showMessageDialog(null,
-                        "Los campos con * son obligatorios",
-                        "Validación", JOptionPane.WARNING_MESSAGE);
             }
+            // Si no pasa validación, ya se mostró mensaje
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null,
                     ex.getMessage(),

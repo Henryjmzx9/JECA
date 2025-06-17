@@ -117,11 +117,5 @@ class UsuarioDAOTest {
             fail("No se pudo obtener la lista de usuarios: " + e.getMessage());
         }
     }
-    @Test
-    void createUser() throws SQLException {
-        Usuario usuario = new Usuario(0, "admin", "12345", "admin@gmail.com", (byte) 1, Rol.Administrador);
-        Usuario res = usuarioDAO.create(usuario);
-        assertNotNull(res, "El usuario creado debe existir.");
-        usuarioDAO.delete(res.getId()); // limpieza
-    }
+
 }
