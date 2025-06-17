@@ -110,21 +110,44 @@ public class PaqueteViajeForm extends JDialog {
     }
 
     private boolean getValuesControls() {
+        // Validación del combo de destinos
         CBOption selectedDestino = (CBOption) cbDestino.getSelectedItem();
         int destinoId = selectedDestino != null ? (int) selectedDestino.getValue() : 0;
 
-        if (txtNombre.getText().trim().isEmpty() || txtPrecio.getText().trim().isEmpty() || destinoId == 0
-                || (this.cud != CUD.CREATE && this.en.getPaqueteId() == 0)) {
+        // Verificar si el destino no fue seleccionado
+        if (destinoId == 0) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un destino.", "Validación", JOptionPane.WARNING_MESSAGE);
             return false;
         }
 
-        this.en.setNombre(txtNombre.getText());
-        this.en.setPrecio(Double.parseDouble(txtPrecio.getText()));
+        // Verificar campos vacíos
+        if (txtNombre.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El campo 'Nombre' es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        if (txtPrecio.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El campo 'Precio' es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Validación del precio como valor numérico
+        double precio;
+        try {
+            precio = Double.parseDouble(txtPrecio.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "El precio debe ser un número válido.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        // Asignar valores al objeto `Paquete`
+        this.en.setNombre(txtNombre.getText().trim());
+        this.en.setPrecio(precio);
         this.en.setDuracionDias((int) spnDuracionDias.getValue());
         this.en.setDestinoId(destinoId);
-        this.en.setDescripcion(textArea1.getText());
+        this.en.setDescripcion(textArea1.getText().trim());
 
-        // ✅ Asignar fechas por defecto según la duración
+        // Fechas calculadas
         this.en.setFechaInicio(LocalDate.now());
         this.en.setFechaFin(LocalDate.now().plusDays(this.en.getDuracionDias()));
 
@@ -154,8 +177,6 @@ public class PaqueteViajeForm extends JDialog {
                 } else {
                     JOptionPane.showMessageDialog(null, "No se logró realizar la operación", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                JOptionPane.showMessageDialog(null, "Los campos con * son obligatorios", "Validación", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);

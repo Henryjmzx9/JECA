@@ -46,6 +46,23 @@ public class LoginForm extends JDialog {
             String email = TxtEmail.getText().trim();
             String password = new String(txtPassword.getPassword()).trim();
 
+            // Validar que sea un correo gmail
+            if (!email.toLowerCase().endsWith("@gmail.com")) {
+                JOptionPane.showMessageDialog(this,
+                        "Por favor ingrese un correo válido de Gmail.",
+                        "Validación de Email",
+                        JOptionPane.WARNING_MESSAGE);
+                return; // Salir del método para evitar llamar a authenticate
+            }
+
+            if (password.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "La contraseña es obligatoria.",
+                        "Validación de Contraseña",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Autenticación del usuario
             Usuario userAut = userDAO.authenticate(email, password);
 

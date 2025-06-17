@@ -109,12 +109,28 @@ public class ReservaForm extends JDialog {
         CBOption selectedPaquete = (CBOption) cbPaquetes.getSelectedItem();
         CBOption selectedEstado = (CBOption) cbStatus.getSelectedItem();
 
-        if (selectedCliente == null || (int) selectedCliente.getValue() == 0 ||
-                selectedPaquete == null || (int) selectedPaquete.getValue() == 0 ||
-                selectedEstado == null || selectedEstado.getValue() == null) {
+        // Validar cliente seleccionado
+        if (selectedCliente == null || (int) selectedCliente.getValue() == 0) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un cliente.", "Validación", JOptionPane.WARNING_MESSAGE);
+            cbClientes.requestFocus();
             return false;
         }
 
+        // Validar paquete seleccionado
+        if (selectedPaquete == null || (int) selectedPaquete.getValue() == 0) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un paquete.", "Validación", JOptionPane.WARNING_MESSAGE);
+            cbPaquetes.requestFocus();
+            return false;
+        }
+
+        // Validar estado seleccionado
+        if (selectedEstado == null || selectedEstado.getValue() == null || "N/A".equals(selectedEstado.getValue())) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un estado.", "Validación", JOptionPane.WARNING_MESSAGE);
+            cbStatus.requestFocus();
+            return false;
+        }
+
+        // Lógica original para asignar los valores
         Cliente cliente = new Cliente((int) selectedCliente.getValue());
         Paquete paquete = new Paquete((int) selectedPaquete.getValue());
         EstadoReserva estado = (EstadoReserva) selectedEstado.getValue();
@@ -175,8 +191,6 @@ public class ReservaForm extends JDialog {
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Error guardando reserva: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "Debe completar todos los campos obligatorios.", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 

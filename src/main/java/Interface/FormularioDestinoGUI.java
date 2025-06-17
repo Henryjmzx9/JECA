@@ -117,15 +117,48 @@ public class FormularioDestinoGUI extends JDialog {
         }
     }
 
-    private void guardarDestino() {
+    private boolean validarCampos() {
         String nombre = nombreField.getText().trim();
         String pais = paisField.getText().trim();
         String descripcion = descripcionArea.getText().trim();
 
-        if (nombre.isEmpty() || pais.isEmpty() || descripcion.isEmpty() || imagenRuta == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos y selecciona una imagen.");
+        if (nombre.isEmpty() || !nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$") || nombre.length() < 3 || nombre.length() > 50) {
+            JOptionPane.showMessageDialog(this, "El nombre debe tener entre 3 y 50 caracteres y solo puede contener letras y espacios.");
+            return false;
+        }
+
+        if (pais.isEmpty() || !pais.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$") || pais.length() < 3 || pais.length() > 50) {
+            JOptionPane.showMessageDialog(this, "El país debe tener entre 3 y 50 caracteres y solo puede contener letras y espacios.");
+            return false;
+        }
+
+        if (descripcion.isEmpty() || descripcion.length() < 10) {
+            JOptionPane.showMessageDialog(this, "La descripción debe tener al menos 10 caracteres.");
+            return false;
+        }
+
+        if (imagenRuta == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona una imagen.");
+            return false;
+        }
+
+        File imagenFile = new File(imagenRuta);
+        if (imagenFile.length() > 2 * 1024 * 1024) { // 2 MB máximo
+            JOptionPane.showMessageDialog(this, "La imagen seleccionada es demasiado grande. Debe ser menor a 2 MB.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void guardarDestino() {
+        if (!validarCampos()) {
             return;
         }
+
+        String nombre = nombreField.getText().trim();
+        String pais = paisField.getText().trim();
+        String descripcion = descripcionArea.getText().trim();
 
         try {
             byte[] imagenBytes = Files.readAllBytes(new File(imagenRuta).toPath());
@@ -153,14 +186,13 @@ public class FormularioDestinoGUI extends JDialog {
     }
 
     private void actualizarDestino() {
+        if (!validarCampos()) {
+            return;
+        }
+
         String nombre = nombreField.getText().trim();
         String pais = paisField.getText().trim();
         String descripcion = descripcionArea.getText().trim();
-
-        if (nombre.isEmpty() || pais.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, completa todos los campos.");
-            return;
-        }
 
         try {
             destino.setNombre(nombre);

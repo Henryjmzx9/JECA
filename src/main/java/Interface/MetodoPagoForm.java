@@ -66,6 +66,11 @@ public class MetodoPagoForm extends JDialog {
         if (nombre.isEmpty()) {
             return false;
         }
+        // Verificar campos vacíos
+        if (txtNombreMetodo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "El campo 'Nombre' es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
         metodoPago.setNombreMetodo(nombre);
         return true;
     }
