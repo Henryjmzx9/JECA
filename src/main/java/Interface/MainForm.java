@@ -5,6 +5,7 @@ import utils.Rol;
 
 import javax.swing.*;
 
+
 public class MainForm extends JFrame {
 
     private Usuario userAutenticate;
